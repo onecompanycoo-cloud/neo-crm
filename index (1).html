@@ -1,0 +1,2103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEO CRM by Crava</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f3ef;
+  --surface:#ffffff;
+  --surface2:#f9f8f6;
+  --surface3:#f0ede8;
+  --surface4:#e8e3db;
+  --text:#18160f;
+  --text2:#6b6557;
+  --text3:#a89e90;
+  --border:rgba(24,22,15,0.08);
+  --border2:rgba(24,22,15,0.15);
+  --accent:#E87B1E;
+  --accent-dark:#C45F08;
+  --accent-hover:#F08830;
+  --accent-light:#FEF0E3;
+  --accent-mid:#FDDBB8;
+  --red:#D94040;--red-light:#fdeaea;
+  --green:#1A8A5A;--green-light:#e3f5ec;
+  --blue:#1A5FA8;--blue-light:#e3eef8;
+  --purple:#6442C8;--purple-light:#eeebfa;
+  --r:8px;--rl:12px;--rxl:16px;
+  --shadow:0 1px 4px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.05);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.13);
+  --sidebar-w:228px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#0f0e0a;--surface:#1a1814;--surface2:#201e19;--surface3:#272420;--surface4:#2f2b25;
+    --text:#f0ece4;--text2:#a89e90;--text3:#6b6557;
+    --border:rgba(240,236,228,0.07);--border2:rgba(240,236,228,0.13);
+    --accent-light:#2a1800;--accent-mid:#3d2200;
+    --red-light:#300;--green-light:#001a0d;--blue-light:#001428;--purple-light:#150d30;
+    --shadow:0 1px 4px rgba(0,0,0,0.4),0 4px 16px rgba(0,0,0,0.3);
+    --shadow-lg:0 8px 32px rgba(0,0,0,0.55);
+  }
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ─── SVG ICONS ─── */
+.ico{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.ico svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ─── LAYOUT ─── */
+#app{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:40}
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* ─── SIDEBAR ─── */
+.sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo-icon{width:34px;height:34px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{stroke:#fff;width:18px;height:18px}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-size:15px;font-weight:700;letter-spacing:-0.3px;color:var(--text);line-height:1}
+.logo-name em{color:var(--accent);font-style:normal}
+.logo-by{font-size:10px;color:var(--text3);letter-spacing:.3px}
+
+.sidebar-section{padding:6px 8px}
+.sidebar-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:8px 8px 4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all .15s;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--accent-light);color:var(--accent)}
+.nav-item.active .ico{color:var(--accent)}
+.nav-item .ico{color:var(--text3);width:16px;height:16px}
+.nav-item.active .ico{color:var(--accent)}
+.nav-badge{margin-left:auto;font-size:10px;font-weight:600;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:20px;background:var(--surface3);color:var(--text3)}
+.nav-item.active .nav-badge{background:var(--accent);color:#fff}
+
+.sidebar-bottom{margin-top:auto;padding:10px 8px;border-top:1px solid var(--border)}
+.user-chip{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;transition:background .15s}
+.user-chip:hover{background:var(--surface2)}
+.logo-img-wrap{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);transition:border-color .15s}
+.logo-img-wrap:hover{border-color:var(--accent)}
+.user-av{width:30px;height:30px;border-radius:50%;background:var(--accent-light);border:1.5px solid var(--accent-mid);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.user-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.2}
+.user-role{font-size:10px;color:var(--text3)}
+
+/* ─── TOPBAR ─── */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:52px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:30}
+.topbar-title{font-size:14px;font-weight:600;color:var(--text);flex:1}
+.pipeline-switcher{display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:3px;flex-shrink:0}
+.pipeline-btn{font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:none;background:none;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.pipeline-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.pipeline-btn-add{background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:3px 6px;border-radius:5px;line-height:1;transition:all .15s}
+.pipeline-btn-add:hover{background:var(--surface);color:var(--accent)}
+.topbar-sep{display:flex;align-items:center;flex:1;min-width:0;padding:0 8px}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.view-toggle{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:3px;gap:2px}
+.vtoggle-btn{background:none;border:none;cursor:pointer;color:var(--text3);padding:5px;border-radius:5px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.vtoggle-btn.active{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.vtoggle-btn:hover:not(.active){background:var(--surface);color:var(--text)}
+.search-wrap{position:relative;flex:1;max-width:280px}
+.search-wrap-inner{position:relative}
+.search-ico{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3);pointer-events:none}
+.search-box{font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 10px 7px 30px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface2);color:var(--text);width:100%;transition:all .2s}
+.search-box:focus{outline:none;border-color:var(--accent);background:var(--surface)}
+.search-box::placeholder{color:var(--text3)}
+
+.btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;border-radius:var(--r);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;line-height:1}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:scale(.98)}
+.btn .ico{width:14px;height:14px}
+.btn-accent{background:var(--accent);border-color:var(--accent-dark);color:#fff}
+.btn-accent:hover{background:var(--accent-hover)}
+.btn-ghost{border-color:transparent;background:none;color:var(--text2)}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);border-color:var(--border)}
+.btn-sm{font-size:12px;padding:5px 10px}
+.btn-icon{padding:7px;aspect-ratio:1;border-radius:var(--r)}
+.btn-danger{border-color:var(--red);color:var(--red);background:none}
+.btn-danger:hover{background:var(--red-light)}
+
+/* ─── BACKUP SHIELD ─── */
+.backup-shield{background:var(--green-light);border:1px solid rgba(26,138,90,0.25);border-radius:var(--rl);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.backup-shield svg{stroke:var(--green);flex-shrink:0}
+.backup-shield-text{flex:1}
+.backup-shield-title{font-size:13px;font-weight:600;color:var(--green)}
+.backup-shield-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.backup-warn{background:var(--red-light);border:1px solid rgba(217,64,64,0.2);border-radius:var(--rl);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.backup-warn svg{stroke:var(--red);flex-shrink:0}
+.backup-warn-text{flex:1;font-size:12px;color:var(--red)}
+.backup-auto-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.backup-auto-row:last-child{border-bottom:none}
+.backup-freq{font-family:'DM Mono',monospace;font-size:11px;padding:3px 8px;border-radius:var(--r);border:1px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer}
+.supabase-row{display:flex;flex-direction:column;gap:8px;padding:10px 0}
+.supabase-status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3)}
+.supabase-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.supabase-dot.ok{background:var(--green);box-shadow:0 0 0 3px rgba(26,138,90,0.2)}
+.supabase-dot.err{background:var(--red)}
+
+/* ─── WHATSAPP INTEGRATION ─── */
+.wa-status-bar{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:var(--r);margin:0 8px 4px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+.wa-status-bar:hover{background:var(--surface2)}
+.wa-status-bar.connected{background:var(--green-light);border-color:rgba(26,138,90,0.2)}
+.wa-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s}
+.wa-dot.on{background:var(--green);box-shadow:0 0 0 3px rgba(26,138,90,0.2);animation:waPulse 2s infinite}
+@keyframes waPulse{0%,100%{box-shadow:0 0 0 3px rgba(26,138,90,0.2)}50%{box-shadow:0 0 0 5px rgba(26,138,90,0.08)}}
+.wa-status-label{font-size:12px;font-weight:500;color:var(--text2);flex:1}
+.wa-status-bar.connected .wa-status-label{color:var(--green)}
+
+/* WA MODAL */
+.wa-modal{background:var(--surface);border-radius:var(--rxl);padding:1.5rem;width:min(420px,100%);border:1px solid var(--border2);box-shadow:var(--shadow-lg)}
+.wa-step{display:none}
+.wa-step.active{display:block}
+.qr-box{width:200px;height:200px;margin:1.25rem auto;border-radius:12px;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.qr-box svg{width:100%;height:100%}
+.qr-spinner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--surface2)}
+.qr-spin{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.wa-info{font-size:12px;color:var(--text3);text-align:center;line-height:1.6;margin-bottom:1rem}
+.wa-contact-list{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;margin:0.75rem 0}
+.wa-contact-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .15s;user-select:none}
+.wa-contact-item:hover{border-color:var(--green);background:var(--green-light)}
+.wa-contact-item.sel{border-color:var(--green);background:var(--green-light)}
+.wa-contact-item input[type=checkbox]{accent-color:var(--green);width:15px;height:15px;flex-shrink:0;cursor:pointer}
+.wa-contact-av{width:32px;height:32px;border-radius:50%;background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;border:1.5px solid rgba(26,138,90,0.25)}
+.wa-contact-info{flex:1;min-width:0}
+.wa-contact-name{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wa-contact-phone{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.wa-sel-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.wa-sel-count{font-size:12px;color:var(--text2)}
+.wa-sel-all{font-size:12px;color:var(--green);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;padding:0}
+.wa-sel-all:hover{text-decoration:underline}
+.wa-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin:8px 0}
+.wa-progress-bar{height:100%;background:var(--green);border-radius:2px;transition:width .4s ease;width:0%}
+.wa-success-ico{width:56px;height:56px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:2px solid rgba(26,138,90,0.2)}
+.wa-success-ico svg{stroke:var(--green);width:28px;height:28px;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* ─── STATS BAR ─── */
+.stats-bar{display:flex;border-bottom:1px solid var(--border);background:var(--surface);overflow-x:auto;flex-shrink:0}
+.stat-pill{padding:9px 18px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--border);flex:1;min-width:90px}
+.stat-val{font-size:18px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text)}
+.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.stat-val.c-accent{color:var(--accent)}
+.stat-val.c-blue{color:var(--blue)}
+.stat-val.c-green{color:var(--green)}
+
+/* ─── VIEWS ─── */
+.view{display:none}
+.view.active{display:block}
+.content{flex:1;padding:1.25rem 1.5rem}
+
+/* ─── TABLE ─── */
+.table-card{background:var(--surface);border-radius:var(--rl);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow)}
+.tbl-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+th{background:var(--surface2);font-weight:600;font-size:10px;color:var(--text3);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.5px}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.tbl-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--border);background:var(--surface2)}
+.tbl-count{font-size:12px;color:var(--text3)}
+.tag-cell{max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl-actions{display:flex;gap:3px;align-items:center}
+.icon-btn{background:none;border:none;cursor:pointer;padding:5px;border-radius:6px;color:var(--text3);display:flex;align-items:center;justify-content:center;transition:all .15s}
+.icon-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.icon-btn:hover{background:var(--surface3);color:var(--text)}
+.icon-btn.del:hover{background:var(--red-light);color:var(--red)}
+.icon-btn.edit:hover{background:var(--accent-light);color:var(--accent)}
+
+/* ─── AVATAR ─── */
+.avatar{border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'DM Mono',monospace}
+.av-sm{width:28px;height:28px;font-size:10px}
+.av-md{width:36px;height:36px;font-size:13px}
+.av-lg{width:48px;height:48px;font-size:16px}
+.name-cell{display:flex;align-items:center;gap:9px;cursor:pointer}
+.name-cell span{font-weight:500}
+
+/* ─── BADGE ─── */
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.role-admin{background:var(--purple-light);color:var(--purple)}
+.role-user{background:var(--blue-light);color:var(--blue)}
+.plan-free{background:var(--surface3);color:var(--text3)}
+.plan-pro{background:var(--accent-light);color:var(--accent)}
+.plan-enterprise{background:var(--purple-light);color:var(--purple)}
+
+/* ─── KANBAN ─── */
+.kanban-outer{overflow-x:auto;overflow-y:auto;padding-bottom:1.5rem;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;max-height:calc(100vh - 160px)}
+.kanban-board{display:flex;gap:12px;align-items:flex-start;min-width:max-content}
+.kanban-col{width:272px;flex-shrink:0}
+.col-head{display:flex;align-items:center;gap:7px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-bottom:none;border-radius:var(--rl) var(--rl) 0 0}
+.col-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.col-name{font-size:13px;font-weight:600;color:var(--text);flex:1;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.col-name-input{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;border:none;background:transparent;color:var(--text);width:100%;outline:2px solid var(--accent);border-radius:4px;padding:1px 4px}
+.col-meta{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.col-count{font-size:11px;color:var(--text3);background:var(--surface3);border-radius:20px;padding:2px 7px}
+.col-val{font-size:11px;color:var(--accent);font-family:'DM Mono',monospace}
+.col-body{min-height:80px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:0 0 var(--rl) var(--rl);display:flex;flex-direction:column;gap:8px;transition:background .15s,border-color .15s}
+.col-body.drag-over{background:var(--accent-light);border-color:var(--accent);transition:background .1s,border-color .1s}
+.col-add{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text3);background:none;border:1px dashed var(--border2);border-radius:var(--r);padding:8px;cursor:pointer;width:100%;text-align:center;transition:all .15s}
+.col-add:hover{background:var(--surface);color:var(--accent);border-color:var(--accent)}
+.add-col-btn{width:44px;height:44px;border-radius:var(--rl);border:1px dashed var(--border2);background:none;color:var(--text3);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.add-col-btn:hover{background:var(--surface);color:var(--accent);border-color:var(--accent)}
+
+/* ─── KCARD ─── */
+.kcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px;cursor:grab;transition:box-shadow .15s,opacity .15s,transform .15s;user-select:none;position:relative}
+.kcard:hover{box-shadow:var(--shadow);border-color:var(--border2)}
+.kcard.dragging{opacity:.4;cursor:grabbing;box-shadow:var(--shadow-lg)}
+.kcard-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px}
+.kcard-info{flex:1;min-width:0}
+.kcard-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kcard-empresa{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kcard-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px}
+.kcard-tag{font-size:11px;color:var(--text3);background:var(--surface3);border-radius:20px;padding:2px 8px}
+.kcard-ticket{font-size:12px;font-weight:600;color:var(--accent);font-family:'DM Mono',monospace}
+.kcard-step{font-size:11px;color:var(--accent-dark);background:var(--accent-light);border-radius:5px;padding:4px 8px;margin-top:7px;line-height:1.4;border-left:2px solid var(--accent)}
+.kcard-wa{font-size:12px;color:var(--green);text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.kcard-wa svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+.kcard-wa:hover{text-decoration:underline}
+.kcard-menu{position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;color:var(--text3);padding:3px;border-radius:4px;opacity:0;transition:opacity .15s;display:flex;align-items:center;z-index:2}
+.kcard-menu svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.kcard:hover .kcard-menu{opacity:1}
+.kcard-menu:hover{background:var(--surface3);color:var(--text)}
+
+/* ─── OVERLAY / MODAL ─── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:300;padding:1rem;backdrop-filter:blur(3px)}
+.modal{background:var(--surface);border-radius:var(--rxl);padding:1.5rem;width:min(520px,100%);border:1px solid var(--border2);max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.modal-hd h3{font-size:15px;font-weight:700}
+.close-x{background:none;border:none;font-size:18px;cursor:pointer;color:var(--text3);padding:4px 8px;border-radius:6px;line-height:1;display:flex;align-items:center;justify-content:center}
+.close-x:hover{background:var(--surface3);color:var(--text)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+@media(max-width:520px){.form-row{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.form-group label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px}
+.form-group input,.form-group select,.form-group textarea{font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 11px;border-radius:var(--r);border:1px solid var(--border2);background:var(--surface);color:var(--text);width:100%;transition:border-color .15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+.form-group textarea{resize:vertical;min-height:72px}
+.modal-ft{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)}
+
+/* ─── DETAIL PANEL ─── */
+.detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:stretch;justify-content:flex-end;z-index:300;backdrop-filter:blur(3px)}
+.detail-panel{background:var(--surface);width:min(400px,100vw);height:100%;overflow-y:auto;padding:1.5rem;border-left:1px solid var(--border2);box-shadow:var(--shadow-lg);display:flex;flex-direction:column}
+.detail-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:1.25rem}
+.detail-name{font-size:16px;font-weight:700;line-height:1.3}
+.detail-empresa{font-size:13px;color:var(--text2);margin-top:2px}
+.detail-field{margin-bottom:14px}
+.detail-field label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px}
+.detail-field p{font-size:14px;color:var(--text);line-height:1.5}
+.detail-sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
+.detail-footer{margin-top:auto;padding-top:1rem;border-top:1px solid var(--border);display:flex;gap:8px}
+
+/* ─── STAGE SETTINGS ─── */
+.stage-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.color-dot-btn{width:22px;height:22px;border-radius:50%;border:2px solid var(--border2);cursor:pointer;flex-shrink:0;transition:transform .15s}
+.color-dot-btn:hover{transform:scale(1.18)}
+.stage-input{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 10px;border-radius:var(--r);border:1px solid var(--border2);background:var(--surface);color:var(--text)}
+.stage-input:focus{outline:none;border-color:var(--accent)}
+.cp-row{display:flex;gap:6px;flex-wrap:wrap;padding:4px 30px 10px}
+.cp{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s}
+.cp:hover,.cp.sel{transform:scale(1.2);border-color:var(--text2)}
+
+/* ─── ADMIN ─── */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:14px;font-weight:600;color:var(--text)}
+.toggle{position:relative;width:34px;height:18px;display:inline-block}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{position:absolute;inset:0;border-radius:9px;background:var(--surface3);border:1px solid var(--border2);cursor:pointer;transition:background .2s}
+.toggle-slider:after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:var(--text3);top:2px;left:2px;transition:transform .2s,background .2s}
+.toggle input:checked+.toggle-slider{background:var(--accent);border-color:var(--accent-dark)}
+.toggle input:checked+.toggle-slider:after{transform:translateX(16px);background:#fff}
+.config-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.config-section h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;gap:7px}
+.config-section h4 svg{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.config-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.config-row:last-child{border-bottom:none}
+.config-label{font-size:13px;color:var(--text)}
+.config-desc{font-size:12px;color:var(--text3);margin-top:1px}
+.activity-item{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border-bottom:none}
+.activity-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);margin-top:5px;flex-shrink:0}
+.activity-text{font-size:13px;color:var(--text);line-height:1.4}
+.activity-time{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ─── METRICS / CHARTS ─── */
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:1.25rem}
+.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1.1rem 1.25rem;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.metric-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--accent);border-radius:0}
+.metric-card.c-green::before{background:var(--green)}
+.metric-card.c-blue::before{background:var(--blue)}
+.metric-card.c-purple::before{background:var(--purple)}
+.metric-card.c-red::before{background:var(--red)}
+.metric-icon{width:32px;height:32px;border-radius:var(--r);background:var(--accent-light);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.metric-icon svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.metric-card.c-green .metric-icon{background:var(--green-light)}
+.metric-card.c-green .metric-icon svg{stroke:var(--green)}
+.metric-card.c-blue .metric-icon{background:var(--blue-light)}
+.metric-card.c-blue .metric-icon svg{stroke:var(--blue)}
+.metric-card.c-purple .metric-icon{background:var(--purple-light)}
+.metric-card.c-purple .metric-icon svg{stroke:var(--purple)}
+.metric-card.c-red .metric-icon{background:var(--red-light)}
+.metric-card.c-red .metric-icon svg{stroke:var(--red)}
+.metric-val{font-size:24px;font-weight:700;font-family:'DM Mono',monospace;color:var(--text);line-height:1}
+.metric-lbl{font-size:11px;color:var(--text2);margin-top:4px}
+.metric-delta{font-size:11px;margin-top:6px;display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;font-weight:500}
+.delta-up{background:var(--green-light);color:var(--green)}
+.delta-down{background:var(--red-light);color:var(--red)}
+.delta-neu{background:var(--surface3);color:var(--text3)}
+
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem}
+@media(max-width:800px){.charts-grid{grid-template-columns:1fr}}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1.1rem 1.25rem;box-shadow:var(--shadow)}
+.chart-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:1rem}
+.chart-wrap{position:relative}
+canvas{display:block;width:100%!important}
+
+/* ─── EMPTY ─── */
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--text3);font-size:14px}
+.empty-state svg{width:36px;height:36px;stroke:var(--text3);fill:none;stroke-width:1.5;margin:0 auto 12px;display:block}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:13px;padding:10px 18px;border-radius:var(--r);z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;box-shadow:var(--shadow-lg)}
+.toast.show{opacity:1}
+
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-img-wrap" id="logoImgWrap" onclick="triggerLogoUpload()" title="Clique para trocar a logo">
+      <img id="logoImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:contain;border-radius:6px">
+      <span id="logoText" style="font-size:15px;font-weight:700;letter-spacing:-0.3px;color:var(--text)"><em style="color:var(--accent);font-style:normal">NEO</em> CRM</span>
+    </div>
+    <div class="logo-text">
+      <div class="logo-name" style="font-size:11px;font-weight:500;color:var(--text2)">by Crava</div>
+    </div>
+  </div>
+  <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="loadLogo(event)">
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Pipeline</div>
+    <button class="nav-item active" id="nav-kanban" onclick="navTo('kanban')">
+      <span class="ico" style="width:16px;height:16px"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg></span>
+      Pipeline
+      <span class="nav-badge" id="nb-kanban">0</span>
+    </button>
+    <button class="nav-item" id="nav-list" onclick="navTo('list')">
+      <span class="ico" style="width:16px;height:16px"><svg viewBox="0 0 24 24" width="16" height="16"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="3" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="3" cy="18" r="1" fill="currentColor" stroke="none"/></svg></span>
+      Lista de leads
+      <span class="nav-badge" id="nb-list">0</span>
+    </button>
+    <button class="nav-item" id="nav-metrics" onclick="navTo('metrics')">
+      <span class="ico" style="width:16px;height:16px"><svg viewBox="0 0 24 24" width="16" height="16"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+      Métricas
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Administração</div>
+    <button class="nav-item" id="nav-admin-users" onclick="navTo('admin-users')">
+      <span class="ico" style="width:16px;height:16px"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      Usuários
+      <span class="nav-badge" id="nb-users">0</span>
+    </button>
+    <button class="nav-item" id="nav-admin-overview" onclick="navTo('admin-overview')">
+      <span class="ico" style="width:16px;height:16px"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      Visão geral
+    </button>
+    <button class="nav-item" id="nav-admin-config" onclick="navTo('admin-config')">
+      <span class="ico" style="width:16px;height:16px"><svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+      Configurações
+    </button>
+  </div>
+
+  <div class="sidebar-bottom">
+    <!-- WhatsApp Integration Button -->
+    <div class="wa-status-bar" id="waStatusBar" onclick="openWaModal()" title="Integração WhatsApp">
+      <div class="wa-dot" id="waDot"></div>
+      <span class="wa-status-label" id="waStatusLabel">Conectar WhatsApp</span>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text3)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div class="user-chip" onclick="navTo('admin-config')">
+      <div class="user-av" id="sidebarAvatar">MA</div>
+      <div>
+        <div class="user-name" id="sidebarName">Márcio Anjos</div>
+        <div class="user-role">Administrador</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+  <div class="topbar">
+    <div class="pipeline-switcher" id="pipelineSwitcher"></div>
+    <div class="topbar-sep" id="searchWrap">
+      <div class="search-wrap-inner">
+        <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-box" id="searchInput" placeholder="Buscar por nome ou número..." oninput="onSearch()">
+      </div>
+    </div>
+    <div class="topbar-right" id="topbarRight">
+      <div class="view-toggle" id="viewToggle">
+        <button class="vtoggle-btn active" id="vt-kanban" onclick="setKanbanListView('kanban')" title="Kanban">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
+        </button>
+        <button class="vtoggle-btn" id="vt-list" onclick="setKanbanListView('list')" title="Lista">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="3" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="3" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg>
+        </button>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="exportBtn" onclick="exportCSV()">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        CSV
+      </button>
+      <button class="btn btn-ghost btn-icon" id="stagesBtn" onclick="openSettings()" title="Configurar etapas">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <button class="btn btn-accent" id="newLeadBtn" onclick="openLeadModal()">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Novo lead
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="statsBar"></div>
+
+  <!-- KANBAN -->
+  <div class="view active content" id="view-kanban" style="padding:1rem 1.5rem">
+    <div class="kanban-outer">
+      <div class="kanban-board" id="kanbanBoard"></div>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <div class="view content" id="view-list">
+    <div class="table-card">
+      <div class="tbl-scroll">
+        <table>
+          <thead><tr>
+            <th style="width:160px">Nome</th>
+            <th style="width:150px">Empresa</th>
+            <th style="width:120px">WhatsApp</th>
+            <th style="width:120px">Etapa</th>
+            <th style="width:80px">Origem</th>
+            <th style="width:90px">Ticket</th>
+            <th style="width:140px">Próximo passo</th>
+            <th style="width:70px">Data</th>
+            <th style="width:90px">Ações</th>
+          </tr></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div id="emptyList" class="empty-state" style="display:none">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        Nenhum lead encontrado.
+      </div>
+      <div class="tbl-footer">
+        <span class="tbl-count" id="listCount">0 leads</span>
+        <button class="btn btn-sm btn-ghost" onclick="exportCSV()">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar CSV
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- METRICS -->
+  <div class="view content" id="view-metrics">
+    <div class="metrics-grid" id="metricsGrid"></div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Leads por etapa</div>
+        <div class="chart-wrap" style="height:220px"><canvas id="chartStages"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Receita por etapa (R$)</div>
+        <div class="chart-wrap" style="height:220px"><canvas id="chartRevenue"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Leads por origem</div>
+        <div class="chart-wrap" style="height:220px"><canvas id="chartOrigin"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Funil de conversão</div>
+        <div class="chart-wrap" style="height:220px"><canvas id="chartFunnel"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN USERS -->
+  <div class="view content" id="view-admin-users">
+    <div class="section-head">
+      <div class="section-title">Usuários do sistema</div>
+      <button class="btn btn-accent btn-sm" onclick="openUserModal()">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Novo usuário
+      </button>
+    </div>
+    <div class="table-card">
+      <div class="tbl-scroll">
+        <table>
+          <thead><tr>
+            <th style="width:180px">Nome</th>
+            <th style="width:200px">E-mail</th>
+            <th style="width:90px">Perfil</th>
+            <th style="width:90px">Plano</th>
+            <th style="width:70px">Ativo</th>
+            <th style="width:60px">Leads</th>
+            <th style="width:80px">Criado</th>
+            <th style="width:90px">Ações</th>
+          </tr></thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+      <div id="emptyUsers" class="empty-state" style="display:none">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        Nenhum usuário cadastrado.
+      </div>
+      <div class="tbl-footer"><span class="tbl-count" id="usersCount">0 usuários</span></div>
+    </div>
+  </div>
+
+  <!-- ADMIN OVERVIEW -->
+  <div class="view content" id="view-admin-overview">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.25rem" id="adminKpis"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div class="section-head"><div class="section-title">Leads por etapa</div></div>
+        <div class="table-card" id="stagesOverview"></div>
+      </div>
+      <div>
+        <div class="section-head"><div class="section-title">Atividade recente</div></div>
+        <div class="table-card" style="padding:0 14px" id="activityFeed"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN CONFIG -->
+  <div class="view content" id="view-admin-config">
+    <div style="max-width:680px">
+      <div class="config-section">
+        <h4>
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Perfil do administrador
+        </h4>
+        <div class="form-row">
+          <div class="form-group"><label>Nome</label><input id="cfg_name" placeholder="Seu nome"></div>
+          <div class="form-group"><label>E-mail</label><input id="cfg_email" placeholder="email@exemplo.com"></div>
+        </div>
+        <div class="form-group"><label>Empresa / Marca</label><input id="cfg_brand" placeholder="Crava"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="triggerLogoUpload()">Trocar logo (sidebar)</button>
+          <button class="btn btn-accent btn-sm" onclick="saveProfile()">Salvar perfil</button>
+        </div>
+      </div>
+
+      <div class="config-section">
+        <h4>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Etapas do pipeline
+        </h4>
+        <div id="cfgStagesList"></div>
+        <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:4px" onclick="addCfgStage()">+ Adicionar etapa</button>
+        <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn btn-accent btn-sm" onclick="saveCfgStages()">Salvar etapas</button></div>
+      </div>
+
+      <div class="config-section">
+        <h4>
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Preferências
+        </h4>
+        <div class="config-row">
+          <div><div class="config-label">Confirmação ao remover lead</div><div class="config-desc">Pedir confirmação antes de deletar</div></div>
+          <label class="toggle"><input type="checkbox" id="cfg_confirm" checked onchange="savePref('confirmDelete',this.checked)"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="config-row">
+          <div><div class="config-label">Valor por coluna no Kanban</div><div class="config-desc">Exibe soma dos tickets em cada etapa</div></div>
+          <label class="toggle"><input type="checkbox" id="cfg_colval" checked onchange="savePref('showColValue',this.checked)"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <div class="config-section">
+        <h4>
+          <svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Proteção de dados
+        </h4>
+
+        <!-- Status geral -->
+        <div id="backupShieldEl"></div>
+
+        <!-- CAMADA 1: CSV manual -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin:14px 0 8px">Camada 1 — CSV manual</div>
+        <div class="config-row">
+          <div><div class="config-label">Exportar todos os leads</div><div class="config-desc">Baixar CSV completo agora — salve na pasta Downloads ou iCloud</div></div>
+          <button class="btn btn-sm" onclick="exportCSV()">Exportar CSV</button>
+        </div>
+        <div class="config-row">
+          <div><div class="config-label">Importar leads (CSV)</div><div class="config-desc">Restaurar a partir de um backup CSV</div></div>
+          <button class="btn btn-sm" onclick="triggerImport()">Importar CSV</button>
+        </div>
+
+        <!-- CAMADA 2: JSON automático -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin:18px 0 8px">Camada 2 — Backup JSON automático</div>
+        <div class="backup-warn" id="jsonWarnEl" style="display:none">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span class="backup-warn-text">Nenhum backup automático feito ainda. Clique em "Backup agora" para salvar uma cópia completa em JSON no seu Mac.</span>
+        </div>
+        <div class="config-row">
+          <div>
+            <div class="config-label">Backup automático a cada</div>
+            <div class="config-desc" id="lastBackupLabel">Último backup: nunca</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <select class="backup-freq" id="backupFreqSel" onchange="setBackupFreq(this.value)">
+              <option value="0">Desligado</option>
+              <option value="30">30 min</option>
+              <option value="60" selected>1 hora</option>
+              <option value="360">6 horas</option>
+              <option value="1440">1 dia</option>
+            </select>
+            <button class="btn btn-sm" onclick="exportJSON()">Backup agora</button>
+          </div>
+        </div>
+        <div class="config-row">
+          <div><div class="config-label">Restaurar backup JSON</div><div class="config-desc">Carregar arquivo .json gerado anteriormente</div></div>
+          <button class="btn btn-sm" onclick="triggerImportJSON()">Restaurar JSON</button>
+        </div>
+
+        <!-- CAMADA 3: Supabase nuvem -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin:18px 0 8px">Camada 3 — Nuvem Supabase</div>
+        <div class="supabase-row">
+          <div class="supabase-status">
+            <div class="supabase-dot" id="sbDot"></div>
+            <span id="sbStatusLabel">Não configurado — dados ficam apenas neste navegador</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+            <div style="flex:1;min-width:200px">
+              <div class="form-group" style="margin-bottom:6px">
+                <label>URL do Supabase</label>
+                <input id="sb_url" placeholder="https://xyzxyz.supabase.co" style="font-size:12px" oninput="sbCheckConfig()">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Anon Key</label>
+                <input id="sb_key" type="password" placeholder="eyJhbGciOi..." style="font-size:12px" oninput="sbCheckConfig()">
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn btn-sm" onclick="sbTestConnection()">Testar conexão</button>
+            <button class="btn btn-sm btn-accent" onclick="sbSyncNow()">Sincronizar agora</button>
+            <button class="btn btn-sm" id="sbAutoSyncBtn" onclick="sbToggleAutoSync()">Auto-sync: OFF</button>
+          </div>
+          <div id="sbSyncLog" style="font-size:11px;color:var(--text3);margin-top:6px"></div>
+        </div>
+
+        <!-- Zona de perigo -->
+        <div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.6px;margin:18px 0 8px">Zona de perigo</div>
+        <div class="config-row">
+          <div><div class="config-label" style="color:var(--red)">Apagar todos os dados</div><div class="config-desc">Irreversível — faça backup antes</div></div>
+          <button class="btn btn-sm btn-danger" onclick="nukeData()">Apagar tudo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- ══ LEAD MODAL ══ -->
+<div id="leadModal" class="overlay" style="display:none">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-hd">
+      <h3 id="lmTitle">Novo lead</h3>
+      <button class="close-x" onclick="closeLeadModal()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Nome *</label><input id="f_nome" placeholder="Dr. João Silva"></div>
+      <div class="form-group"><label>Empresa *</label><input id="f_clinica" placeholder="Clínica / Empresa"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>WhatsApp</label><input id="f_whats" placeholder="91 99999-9999"></div>
+      <div class="form-group"><label>E-mail</label><input id="f_email" placeholder="contato@clinica.com"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Etapa</label><select id="f_stage"></select></div>
+      <div class="form-group"><label>Origem</label>
+        <select id="f_origem"><option>Instagram</option><option>WhatsApp</option><option>Indicação</option><option>Webinar</option><option>Tráfego</option><option>Disparo</option><option>Outro</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Especialidade</label><input id="f_esp" placeholder="Odontologia, Estética…"></div>
+      <div class="form-group"><label>Ticket estimado (R$)</label><input id="f_ticket" type="number" placeholder="1500"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Responsável</label><select id="f_owner"></select></div>
+      <div class="form-group"><label>Próximo passo</label><input id="f_proximo" placeholder="Ligar quinta de manhã"></div>
+    </div>
+    <div class="form-group"><label>Observações</label><textarea id="f_obs" placeholder="Contexto, objeções, detalhes…"></textarea></div>
+    <div class="modal-ft">
+      <button class="btn" onclick="closeLeadModal()">Cancelar</button>
+      <button class="btn btn-accent" onclick="saveLead()">Salvar lead</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DETAIL PANEL ══ -->
+<div id="detailOverlay" class="detail-overlay" style="display:none">
+  <div style="flex:1" onclick="closeDetail()"></div>
+  <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<!-- ══ STAGES MODAL ══ -->
+<div id="stagesModal" class="overlay" style="display:none">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-hd">
+      <h3>Configurar etapas</h3>
+      <button class="close-x" onclick="closeSettings()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:1rem">Personalize nomes e cores das etapas do pipeline.</p>
+    <div id="stagesSettingsList"></div>
+    <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="addTempStage()">+ Nova etapa</button>
+    <div class="modal-ft">
+      <button class="btn" onclick="closeSettings()">Cancelar</button>
+      <button class="btn btn-accent" onclick="saveSettings()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ USER MODAL ══ -->
+<div id="userModal" class="overlay" style="display:none">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-hd">
+      <h3 id="umTitle">Novo usuário</h3>
+      <button class="close-x" onclick="closeUserModal()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Nome *</label><input id="u_nome" placeholder="João Silva"></div>
+      <div class="form-group"><label>E-mail *</label><input id="u_email" placeholder="joao@email.com"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Perfil</label>
+        <select id="u_role"><option value="user">Usuário</option><option value="admin">Administrador</option></select>
+      </div>
+      <div class="form-group"><label>Plano</label>
+        <select id="u_plan"><option value="free">Free</option><option value="pro">Pro</option><option value="enterprise">Enterprise</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label>Observação interna</label><input id="u_obs" placeholder="Ex: Cliente trial, conta de teste…"></div>
+    <div class="modal-ft">
+      <button class="btn" onclick="closeUserModal()">Cancelar</button>
+      <button class="btn btn-accent" onclick="saveUser()">Salvar usuário</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WHATSAPP MODAL ══ -->
+<div id="waModal" class="overlay" style="display:none" onclick="closeWaModal()">
+  <div class="wa-modal" onclick="event.stopPropagation()">
+    <div class="modal-hd">
+      <h3 id="waModalTitle" style="display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" style="color:var(--green)"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        WhatsApp
+      </h3>
+      <button class="close-x" onclick="closeWaModal()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Step cfg: Configuração inicial -->
+    <div class="wa-step" id="waStepCfg">
+      <p class="wa-info" style="text-align:left;margin-bottom:1rem">Cole as credenciais do seu projeto Supabase para ativar a integração real com o WhatsApp Business.</p>
+      <div class="form-group">
+        <label>URL do Supabase</label>
+        <input id="waInputUrl" placeholder="https://xyzxyz.supabase.co" style="font-size:13px">
+      </div>
+      <div class="form-group">
+        <label>CRM Secret <span style="font-weight:400;color:var(--text3)">(o valor de CRM_SECRET nas env vars)</span></label>
+        <input id="waInputSecret" placeholder="crm_secret_key_..." type="password" style="font-size:13px">
+      </div>
+      <p style="font-size:11px;color:var(--text3);margin-bottom:1rem">Ainda não configurou? Siga o <b>GUIA-SETUP.md</b> incluído no pacote de arquivos.</p>
+      <div class="modal-ft" style="margin-top:0.5rem;padding-top:0.75rem">
+        <button class="btn" onclick="closeWaModal()">Cancelar</button>
+        <button class="btn btn-accent" style="background:var(--green);border-color:#156e48" onclick="waSaveConfig()">Salvar e conectar</button>
+      </div>
+    </div>
+
+    <!-- Step 1: QR Code -->
+    <div class="wa-step" id="waStep1">
+      <div class="qr-box" id="waQrBox">
+        <div class="qr-spinner" id="waQrSpinner"><div class="qr-spin"></div></div>
+        <svg id="waQrSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="display:none"></svg>
+      </div>
+      <p class="wa-info" id="waQrHint" style="text-align:left">Gerando QR Code...</p>
+      <div class="modal-ft" style="margin-top:0.5rem;padding-top:0.75rem">
+        <button class="btn btn-ghost btn-sm" onclick="waGoToStep('cfg')" style="font-size:12px">⚙️ Reconfigurar</button>
+        <button class="btn" onclick="closeWaModal()">Cancelar</button>
+        <button class="btn btn-accent" style="background:var(--green);border-color:#156e48" onclick="waConfirmConnect()">✓ Já conectei</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Select Contacts -->
+    <div class="wa-step" id="waStep2">
+      <p class="wa-info" style="text-align:left;margin-bottom:0.5rem">✅ WhatsApp conectado! Selecione os contatos para importar como leads.</p>
+      <div class="wa-sel-bar">
+        <span class="wa-sel-count" id="waSelCount">0 selecionados</span>
+        <button class="wa-sel-all" onclick="waToggleAll()">Selecionar todos</button>
+      </div>
+      <div class="wa-contact-list" id="waContactList"></div>
+      <div class="modal-ft" style="margin-top:0.75rem;padding-top:0.75rem">
+        <button class="btn btn-ghost btn-sm" onclick="waDisconnect()" style="color:var(--red)">Desconectar</button>
+        <button class="btn" onclick="closeWaModal()">Fechar</button>
+        <button class="btn btn-accent" style="background:var(--green);border-color:#156e48" onclick="waImportSelected()">Importar selecionados</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Importing -->
+    <div class="wa-step" id="waStep3">
+      <p class="wa-info">Importando contatos para o Kanban...</p>
+      <div class="wa-progress"><div class="wa-progress-bar" id="waProgressBar"></div></div>
+      <p class="wa-info" id="waProgressLabel" style="font-size:11px">0%</p>
+    </div>
+
+    <!-- Step 4: Success -->
+    <div class="wa-step" id="waStep4">
+      <div class="wa-success-ico"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <p style="text-align:center;font-weight:600;font-size:14px;margin-bottom:6px" id="waSuccessMsg">Contatos importados!</p>
+      <p class="wa-info">Os leads estão no Kanban. Mesmo após desconectar o WhatsApp, os dados permanecem salvos.</p>
+      <div class="modal-ft" style="margin-top:0.75rem;padding-top:0.75rem;justify-content:center">
+        <button class="btn btn-ghost btn-sm" onclick="waDisconnect()" style="color:var(--red)">Desconectar WA</button>
+        <button class="btn btn-accent" onclick="waGoToKanban()">Ver no Kanban</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="importFile" accept=".csv" style="display:none" onchange="importCSV(event)">
+<input type="file" id="importJSONFile" accept=".json" style="display:none" onchange="importJSON(event)">
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+/* ══════════ SUPABASE CONFIG ══════════ */
+// Cole aqui sua Supabase URL e Anon Key
+const SUPABASE_URL = 'https://rwccmktutuzqchjdhbxv.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3Y2Nta3R1dHV6cWNoamRoYnh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMDc5NTksImV4cCI6MjA4OTg4Mzk1OX0.XHDn-NElqf06DV8cVRb_ziJKFXFnt3NjSWyHF5eYVUQ';
+
+/* ══════════ STATE ══════════ */
+const KEY = 'neo_crm_v5';
+const COLORS = ['#E87B1E','#F59E0B','#EF4444','#10B981','#3B82F6','#6442C8','#EC4899','#14B8A6','#F97316','#84CC16','#06B6D4','#8B5CF6','#D97706','#DC2626','#059669','#2563EB','#7C3AED','#DB2777','#0D9488','#65A30D','#C45F08','#A32D2D','#0F6E56','#1D4ED8','#4C1D95','#9D174D','#134E4A','#3F6212','#6b6557','#374151'];
+
+let S = {
+  leads:[],
+  pipelines:[
+    {id:'p1',name:'Pipeline Principal'},
+    {id:'p2',name:'Canal Instagram'},
+    {id:'p3',name:'Webinar'}
+  ],
+  activePipeline:'p1',
+  stages:[
+    {id:'s1',name:'Novo lead',color:'#6b6557'},
+    {id:'s2',name:'Contato feito',color:'#BA7517'},
+    {id:'s3',name:'Qualificado',color:'#1A5FA8'},
+    {id:'s4',name:'Proposta enviada',color:'#6442C8'},
+    {id:'s5',name:'Fechado',color:'#1A8A5A'},
+    {id:'s6',name:'Perdido',color:'#D94040'},
+  ],
+  users:[{id:'u1',nome:'Márcio Anjos',email:'marcio@neoinc.com.br',role:'admin',plan:'pro',active:true,criadoEm:new Date().toISOString(),obs:''}],
+  profile:{name:'Márcio Anjos',email:'marcio@neoinc.com.br',brand:'Crava'},
+  prefs:{confirmDelete:true,showColValue:true},
+  activity:[]
+};
+
+let editingLeadId=null, editingUserId=null, draggedId=null, searchQ='', tempStages=[], cfgTempStages=[], curView='kanban';
+let chartInstances={};
+
+/* ══ PERSIST ══ */
+
+// Retorna URL e KEY ativos (constantes ou inputs)
+function sbUrl(){ return (document.getElementById('sb_url')?.value?.trim()) || SUPABASE_URL || ''; }
+function sbKey(){ return (document.getElementById('sb_key')?.value?.trim()) || (SUPABASE_KEY.startsWith('eyJhbGciOi...') ? '' : SUPABASE_KEY) || ''; }
+function sbReady(){ const u=sbUrl(); const k=sbKey(); return u.startsWith('https://') && k.length > 20; }
+
+// Converte lead do formato interno para linha do Supabase
+function leadToRow(l){
+  return {
+    id: l.id, nome: l.nome, clinica: l.clinica,
+    whats: l.whats||null, email: l.email||null,
+    stage_id: l.stageId, origem: l.origem||null,
+    esp: l.esp||null, ticket: l.ticket?Number(l.ticket):null,
+    owner_id: l.ownerId||null, obs: l.obs||null,
+    proximo: l.proximo||null,
+    criado_em: l.criadoEm, atualizado_em: l.atualizadoEm
+  };
+}
+
+// Converte linha do Supabase para formato interno
+function rowToLead(r){
+  return {
+    id: r.id, nome: r.nome, clinica: r.clinica,
+    whats: r.whats||'', email: r.email||'',
+    stageId: r.stage_id||S.stages[0]?.id,
+    origem: r.origem||'Outro', esp: r.esp||'',
+    ticket: r.ticket!=null?String(r.ticket):'',
+    ownerId: r.owner_id||'', obs: r.obs||'',
+    proximo: r.proximo||'',
+    criadoEm: r.criado_em, atualizadoEm: r.atualizado_em
+  };
+}
+
+// Salva UM lead no Supabase (upsert)
+async function sbUpsertLead(lead){
+  if(!sbReady()) return;
+  try{
+    await fetch(`${sbUrl()}/rest/v1/crm_leads`, {
+      method: 'POST',
+      headers:{
+        'apikey': sbKey(), 'Authorization': `Bearer ${sbKey()}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify([leadToRow(lead)])
+    });
+  }catch(e){ console.warn('sbUpsertLead erro:', e); }
+}
+
+// Deleta UM lead no Supabase
+async function sbDeleteLead(id){
+  if(!sbReady()) return;
+  try{
+    await fetch(`${sbUrl()}/rest/v1/crm_leads?id=eq.${id}`, {
+      method: 'DELETE',
+      headers:{ 'apikey': sbKey(), 'Authorization': `Bearer ${sbKey()}` }
+    });
+  }catch(e){ console.warn('sbDeleteLead erro:', e); }
+}
+
+// Carrega TODOS os leads do Supabase
+async function sbLoadLeads(){
+  if(!sbReady()) return null;
+  try{
+    const res = await fetch(`${sbUrl()}/rest/v1/crm_leads?select=*&order=criado_em.desc`, {
+      headers:{ 'apikey': sbKey(), 'Authorization': `Bearer ${sbKey()}` }
+    });
+    if(!res.ok) return null;
+    const rows = await res.json();
+    return Array.isArray(rows) ? rows.map(rowToLead) : null;
+  }catch(e){ console.warn('sbLoadLeads erro:', e); return null; }
+}
+
+async function load(){
+  // 1. Carrega localStorage imediatamente (resposta instantânea)
+  try{
+    const r=localStorage.getItem(KEY);
+    if(r){
+      const d=JSON.parse(r);
+      S.leads=d.leads||[]; S.stages=d.stages&&d.stages.length?d.stages:S.stages;
+      S.users=d.users&&d.users.length?d.users:S.users;
+      if(d.profile) Object.assign(S.profile,d.profile);
+      if(d.prefs) Object.assign(S.prefs,d.prefs);
+      S.activity=d.activity||[];
+    }
+  }catch(e){}
+
+  ensureFunnels(); renderAll(); initBackup(); setTimeout(applyLogo,50);
+
+  // 2. Injeta credenciais nos inputs
+  if(SUPABASE_URL && SUPABASE_URL.startsWith('https://')){
+    const urlEl=document.getElementById('sb_url'); if(urlEl&&!urlEl.value) urlEl.value=SUPABASE_URL;
+  }
+  if(sbKey()){
+    const keyEl=document.getElementById('sb_key'); if(keyEl&&!keyEl.value) keyEl.value=sbKey();
+  }
+
+  // 3. Puxa leads do Supabase em background e atualiza tela
+  if(sbReady()){
+    sbCheckConfig();
+    const remoteLeads = await sbLoadLeads();
+    if(remoteLeads !== null){
+      // Merge: Supabase é fonte da verdade para leads, mantém config local
+      S.leads = remoteLeads;
+      localStorage.setItem(KEY, JSON.stringify(S));
+      renderAll();
+      toast(`☁️ ${remoteLeads.length} leads carregados do Supabase`);
+    }
+  }
+}
+
+function save(){
+  localStorage.setItem(KEY, JSON.stringify(S));
+}
+
+/* ══ UTILS ══ */
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function initials(n){ return n.trim().split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'?'; }
+function avStyle(color){ return `background:${color}18;color:${color};border:1.5px solid ${color}35`; }
+function fmtDate(iso){ if(!iso) return ''; return new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}); }
+function fmtDateFull(iso){ if(!iso) return ''; return new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),2200); }
+function logActivity(msg){ S.activity.unshift({msg,time:new Date().toISOString()}); if(S.activity.length>30) S.activity.pop(); }
+function filteredLeads(){ const base=leadsForFunnel(activeFunnel); if(!searchQ) return base; return base.filter(l=>(l.nome+l.clinica+(l.whats||'')+(l.esp||'')).toLowerCase().includes(searchQ)); }
+function stageOf(id){ return S.stages.find(s=>s.id===id)||{name:'—',color:'#999'}; }
+function ownerOf(id){ const u=S.users.find(u=>u.id===id); return u?u.nome:'—'; }
+
+/* ══ NAVIGATION ══ */
+/* ══ MULTI-FUNIL ══ */
+function switchFunnel(idx){
+  activeFunnel=idx;
+  [0,1,2].forEach(i=>{
+    const b=document.getElementById('fBtn'+i);
+    if(b) b.classList.toggle('active-funnel',i===idx);
+    const n=b?b.textContent.trim():'';
+    if(S.funnels) b.textContent=S.funnels[i]?.name||('Funil '+(i+1));
+  });
+  renderKanban(); renderList(); renderStats();
+}
+
+function switchViewMode(mode){
+  document.getElementById('vTogKanban').classList.toggle('active-tog',mode==='kanban');
+  document.getElementById('vTogList').classList.toggle('active-tog',mode==='list');
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+mode).classList.add('active');
+  curView=mode;
+  if(mode==='kanban') renderKanban(); else renderList();
+}
+
+function updateFunnelCount(){
+  const fl=leadsForFunnel(activeFunnel);
+  const total=fl.length;
+  const val=fl.reduce((a,l)=>a+Number(l.ticket||0),0);
+  const el=document.getElementById('funnelLeadCount');
+  if(el) el.textContent=`${total} lead${total!==1?'s':''}: R$${val.toLocaleString('pt-BR')}`;
+  // update funnel tab labels
+  ensureFunnels();
+  [0,1,2].forEach(i=>{
+    const b=document.getElementById('fBtn'+i);
+    if(b && S.funnels[i]) b.textContent=S.funnels[i].name;
+  });
+}
+
+/* ══ LOGO UPLOAD ══ */
+function handleLogoUpload(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const data=ev.target.result;
+    S.profile.logo=data; save(); applyLogo(); toast('Logo atualizada!');
+    // update config preview
+    const ci=document.getElementById('cfgLogoImg');
+    if(ci){ ci.src=data; ci.style.display='block'; ci.previousElementSibling&&(ci.previousElementSibling.style.display='none'); }
+  };
+  reader.readAsDataURL(file);
+}
+
+function applyLogo(){
+  const logo=S.profile?.logo;
+  const img=document.getElementById('logoImg');
+  const ph=document.getElementById('logoPlaceholder');
+  const ci=document.getElementById('cfgLogoImg');
+  if(logo && img){
+    img.src=logo; img.style.display='block';
+    if(ph) ph.style.display='none';
+    if(ci){ ci.src=logo; ci.style.display='block'; }
+  }
+}
+
+function navTo(v){
+  // Destroi gráficos ao sair da view de métricas (libera canvas para re-uso)
+  if(curView==='metrics' && v!=='metrics'){
+    Object.keys(chartInstances).forEach(k=>{ chartInstances[k].destroy(); delete chartInstances[k]; });
+  }
+  curView=v;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const btn=document.getElementById('nav-'+v); if(btn) btn.classList.add('active');
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  const vEl=document.getElementById('view-'+v); if(vEl) vEl.classList.add('active');
+  const titles={kanban:'Pipeline',list:'Lista de leads',metrics:'Painel','admin-users':'Usuários','admin-overview':'Visão geral','admin-config':'Configurações'};
+  // title now in pipeline switcher
+  const isAdmin=v.startsWith('admin');
+  const isPipeline=(v==='kanban'||v==='list');
+  document.getElementById('searchWrap').style.display=isPipeline?'flex':'none';
+  document.getElementById('funnelSwitcher').style.display=isPipeline?'flex':'none';
+  document.getElementById('viewToggle').style.display=isPipeline?'flex':'none';
+  document.getElementById('funnelLeadCount').style.display=isPipeline?'inline':'none';
+  if(isPipeline) updateFunnelCount();
+  document.getElementById('exportBtn').style.display=v==='admin-config'?'none':'inline-flex';
+  document.getElementById('stagesBtn').style.display=(v==='kanban'||v==='list')?'inline-flex':'none';
+  document.getElementById('newLeadBtn').style.display=isAdmin||v==='metrics'?'none':'inline-flex';
+  if(v==='admin-overview') renderAdminOverview();
+  if(v==='admin-users') renderUsers();
+  if(v==='admin-config'){ renderCfgStages(); setTimeout(renderBackupShield,50); }
+  if(v==='metrics') renderMetrics();
+  if(v==='kanban') renderKanban();
+  if(v==='list') renderList();
+}
+function onSearch(){ searchQ=(document.getElementById('searchInput').value||'').toLowerCase(); if(curView==='kanban') renderKanban(); else if(curView==='list') renderList(); }
+
+/* ══ RENDER ALL ══ */
+function renderAll(){
+  updateBadges();
+  renderStats();
+  renderPipelineSwitcher();
+  renderMetricsCards();
+  if(curView==='kanban'||curView==='list') updateFunnelCount(); // sempre atualiza KPIs independente da view ativa
+  if(curView==='kanban') renderKanban();
+  else if(curView==='list') renderList();
+  else if(curView==='metrics') renderMetrics();
+  else if(curView==='admin-overview') renderAdminOverview();
+  else if(curView==='admin-users') renderUsers();
+  else if(curView==='admin-config') renderCfgStages();
+  applyProfile(); applyCfgPrefs();
+}
+
+function updateBadges(){
+  document.getElementById('nb-kanban').textContent=S.leads.length;
+  document.getElementById('nb-list').textContent=S.leads.length;
+  document.getElementById('nb-users').textContent=S.users.length;
+}
+
+function applyProfile(){
+  document.getElementById('sidebarName').textContent=S.profile.name||'Admin';
+  document.getElementById('sidebarAvatar').textContent=initials(S.profile.name||'A');
+  document.getElementById('cfg_name').value=S.profile.name||'';
+  document.getElementById('cfg_email').value=S.profile.email||'';
+  document.getElementById('cfg_brand').value=S.profile.brand||'';
+}
+function applyCfgPrefs(){
+  document.getElementById('cfg_confirm').checked=!!S.prefs.confirmDelete;
+  document.getElementById('cfg_colval').checked=S.prefs.showColValue!==false;
+}
+
+/* ══ STATS BAR ══ */
+function renderStats(){
+  const leads=S.leads;
+  const total=leads.length;
+  const fechados=leads.filter(l=>stageOf(l.stageId).name.toLowerCase().includes('fech'));
+  const perdidos=leads.filter(l=>stageOf(l.stageId).name.toLowerCase().includes('perd')).length;
+  const pipeline=leads.filter(l=>{ const n=stageOf(l.stageId).name.toLowerCase(); return !n.includes('fech')&&!n.includes('perd'); }).reduce((a,l)=>a+Number(l.ticket||0),0);
+  const receita=fechados.reduce((a,l)=>a+Number(l.ticket||0),0);
+  const tx=total?Math.round(fechados.length/total*100):0;
+  document.getElementById('statsBar').innerHTML=`
+    <div class="stat-pill"><div class="stat-val">${total}</div><div class="stat-lbl">Total leads</div></div>
+    <div class="stat-pill"><div class="stat-val">${S.stages.length}</div><div class="stat-lbl">Etapas</div></div>
+    <div class="stat-pill"><div class="stat-val c-green">${fechados.length}</div><div class="stat-lbl">Fechados</div></div>
+    <div class="stat-pill"><div class="stat-val" style="color:var(--red)">${perdidos}</div><div class="stat-lbl">Perdidos</div></div>
+    <div class="stat-pill"><div class="stat-val c-blue" style="font-size:14px">R$${pipeline.toLocaleString('pt-BR')}</div><div class="stat-lbl">Pipeline</div></div>
+    <div class="stat-pill"><div class="stat-val c-accent" style="font-size:14px">R$${receita.toLocaleString('pt-BR')}</div><div class="stat-lbl">Receita</div></div>
+    <div class="stat-pill"><div class="stat-val">${tx}%</div><div class="stat-lbl">Conversão</div></div>
+  `;
+}
+
+/* ══ KANBAN ══ */
+function renderKanban(){
+  const board=document.getElementById('kanbanBoard');
+  const leads=filteredLeads();
+  board.innerHTML=S.stages.map(stage=>{
+    const cards=leads.filter(l=>l.stageId===stage.id);
+    const total=cards.reduce((a,l)=>a+Number(l.ticket||0),0);
+    const sv=S.prefs.showColValue!==false;
+    return `<div class="kanban-col">
+      <div class="col-head" ondragover="onDragOver(event,'${stage.id}')" ondrop="onDrop(event,'${stage.id}')">
+        <div class="col-dot" style="background:${stage.color}"></div>
+        <div class="col-name" ondblclick="startColRename('${stage.id}',this)">${esc(stage.name)}</div>
+        <div class="col-meta">
+          <span class="col-count">${cards.length}</span>
+          ${sv&&total>0?`<span class="col-val">R$${total.toLocaleString('pt-BR')}</span>`:''}
+        </div>
+      </div>
+      <div class="col-body" id="cb-${stage.id}"
+        ondragover="onDragOver(event,'${stage.id}')"
+        ondragleave="onDragLeave(event,'${stage.id}')"
+        ondrop="onDrop(event,'${stage.id}')">
+        ${cards.map(l=>kCard(l,stage)).join('')}
+        <button class="col-add" id="ca-${stage.id}">+ Adicionar lead</button>
+      </div>
+    </div>`;
+  }).join('')+`<div style="display:flex;align-items:flex-start"><button class="add-col-btn" onclick="addStageQuick()" title="Nova etapa">+</button></div>`;
+  S.stages.forEach(s=>{ const b=document.getElementById('ca-'+s.id); if(b) b.onclick=()=>openLeadModal('',s.id); });
+}
+
+function kCard(l,stage){
+  return `<div class="kcard" id="kc-${l.id}" draggable="true" ondragstart="onDragStart(event,'${l.id}')" ondragend="onDragEnd()" onclick="openDetail('${l.id}')">
+    <button class="kcard-menu" onclick="event.stopPropagation();openDetail('${l.id}')">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="5" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg>
+    </button>
+    <div class="kcard-top">
+      <div class="avatar av-sm" style="${avStyle(stage.color)}">${initials(l.nome)}</div>
+      <div class="kcard-info">
+        <div class="kcard-name">${esc(l.nome)}</div>
+        <div class="kcard-empresa">${esc(l.clinica)}</div>
+      </div>
+    </div>
+    <div class="kcard-foot">
+      ${l.whats?`<a class="kcard-wa" href="https://wa.me/55${l.whats.replace(/\D/g,'')}" target="_blank" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.87-.87a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${esc(l.whats)}</a>`:`<span class="kcard-tag">${esc(l.origem||'')}</span>`}
+      ${l.ticket?`<span class="kcard-ticket">R$${Number(l.ticket).toLocaleString('pt-BR')}</span>`:''}
+    </div>
+    ${l.proximo?`<div class="kcard-step">${esc(l.proximo)}</div>`:''}
+  </div>`;
+}
+
+/* DRAG & DROP — improved hit zones + auto-scroll */
+let dragScrollTimer=null;
+function onDragStart(e,id){
+  draggedId=id; e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',id);
+  setTimeout(()=>{ const el=document.getElementById('kc-'+id); if(el){el.classList.add('dragging');} },0);
+}
+function onDragEnd(){
+  document.querySelectorAll('.kcard.dragging').forEach(el=>el.classList.remove('dragging'));
+  document.querySelectorAll('.col-body.drag-over,.kanban-col.col-drag-target').forEach(el=>{el.classList.remove('drag-over','col-drag-target');});
+  if(dragScrollTimer){clearInterval(dragScrollTimer);dragScrollTimer=null;}
+  draggedId=null;
+}
+function onDragOver(e,sid){
+  e.preventDefault(); e.stopPropagation();
+  e.dataTransfer.dropEffect='move';
+  // Remove drag-over from all cols first
+  document.querySelectorAll('.col-body.drag-over').forEach(el=>{ if(el.id!=='cb-'+sid) el.classList.remove('drag-over'); });
+  const cb=document.getElementById('cb-'+sid); if(cb) cb.classList.add('drag-over');
+  // Auto-scroll kanban board horizontally
+  const board=document.querySelector('.kanban-outer');
+  if(board){
+    const rect=board.getBoundingClientRect();
+    const x=e.clientX;
+    if(dragScrollTimer){clearInterval(dragScrollTimer);dragScrollTimer=null;}
+    if(x<rect.left+80) dragScrollTimer=setInterval(()=>board.scrollLeft-=12,30);
+    else if(x>rect.right-80) dragScrollTimer=setInterval(()=>board.scrollLeft+=12,30);
+  }
+}
+function onDragLeave(e,sid){
+  // Only remove if leaving the entire column (not entering a child)
+  const cb=document.getElementById('cb-'+sid);
+  const col=cb?.closest('.kanban-col');
+  if(col && !col.contains(e.relatedTarget)){
+    cb.classList.remove('drag-over');
+    if(dragScrollTimer){clearInterval(dragScrollTimer);dragScrollTimer=null;}
+  }
+}
+function onDrop(e,sid){
+  e.preventDefault();
+  document.querySelectorAll('.col-body.drag-over').forEach(el=>el.classList.remove('drag-over'));
+  if(dragScrollTimer){clearInterval(dragScrollTimer);dragScrollTimer=null;}
+  const id=e.dataTransfer.getData('text/plain')||draggedId;
+  if(!id) return;
+  const l=S.leads.find(x=>x.id===id);
+  if(l&&l.stageId!==sid){
+    l.stageId=sid; l.atualizadoEm=new Date().toISOString();
+    logActivity(`Lead "${l.nome}" movido para ${stageOf(sid).name}`);
+    save(); renderKanban(); renderStats(); renderMetricsCards();
+    if(curView==='metrics') renderMetrics();
+    toast('Lead movido!'); sbUpsertLead(l);
+  }
+  draggedId=null;
+}
+
+function startColRename(sid,el){ const s=S.stages.find(x=>x.id===sid); if(!s) return; const inp=document.createElement('input'); inp.className='col-name-input'; inp.value=s.name; el.replaceWith(inp); inp.focus(); inp.select(); const done=()=>{ s.name=inp.value.trim()||s.name; save(); renderKanban(); }; inp.onblur=done; inp.onkeydown=e=>{ if(e.key==='Enter') done(); if(e.key==='Escape'){save();renderKanban();} }; }
+
+/* ══ LIST VIEW ══ */
+function renderList(){
+  const leads=filteredLeads();
+  const tbody=document.getElementById('tableBody');
+  const empty=document.getElementById('emptyList');
+  document.getElementById('listCount').textContent=`${leads.length} lead${leads.length!==1?'s':''}`;
+  if(!leads.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  const editIco=`<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+  const eyeIco=`<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  const delIco=`<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
+  tbody.innerHTML=leads.map(l=>{
+    const stage=stageOf(l.stageId);
+    return `<tr>
+      <td><div class="name-cell" onclick="openDetail('${l.id}')"><div class="avatar av-sm" style="${avStyle(stage.color)}">${initials(l.nome)}</div><span>${esc(l.nome)}</span></div></td>
+      <td class="tag-cell" title="${esc(l.clinica)}">${esc(l.clinica)}</td>
+      <td>${l.whats?`<a href="https://wa.me/55${l.whats.replace(/\D/g,'')}" target="_blank">${esc(l.whats)}</a>`:'—'}</td>
+      <td><span class="badge" style="background:${stage.color}18;color:${stage.color}">${esc(stage.name)}</span></td>
+      <td style="color:var(--text2);font-size:12px">${esc(l.origem||'')}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">${l.ticket?'R$'+Number(l.ticket).toLocaleString('pt-BR'):'—'}</td>
+      <td class="tag-cell" style="color:var(--text2)" title="${esc(l.proximo||'')}">${esc(l.proximo||'—')}</td>
+      <td style="color:var(--text3);font-size:12px">${fmtDate(l.criadoEm)}</td>
+      <td><div class="tbl-actions">
+        <button class="icon-btn" onclick="openDetail('${l.id}')">${eyeIco}</button>
+        <button class="icon-btn edit" onclick="openLeadModal('${l.id}')">${editIco}</button>
+        <button class="icon-btn del" onclick="deleteLead('${l.id}')">${delIco}</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ══ LEAD MODAL ══ */
+function populateLeadSelects(){
+  document.getElementById('f_stage').innerHTML=S.stages.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  document.getElementById('f_owner').innerHTML=`<option value="">Sem responsável</option>`+S.users.map(u=>`<option value="${u.id}">${esc(u.nome)}</option>`).join('');
+}
+function openLeadModal(id,defaultStageId){
+  editingLeadId=id||null;
+  const m=id?S.leads.find(l=>l.id===id):null;
+  document.getElementById('lmTitle').textContent=id?'Editar lead':'Novo lead';
+  populateLeadSelects();
+  document.getElementById('f_nome').value=m?.nome||'';
+  document.getElementById('f_clinica').value=m?.clinica||'';
+  document.getElementById('f_whats').value=m?.whats||'';
+  document.getElementById('f_email').value=m?.email||'';
+  document.getElementById('f_stage').value=m?.stageId||defaultStageId||S.stages[0]?.id||'';
+  document.getElementById('f_origem').value=m?.origem||'Instagram';
+  document.getElementById('f_esp').value=m?.esp||'';
+  document.getElementById('f_ticket').value=m?.ticket||'';
+  document.getElementById('f_owner').value=m?.ownerId||'';
+  document.getElementById('f_proximo').value=m?.proximo||'';
+  document.getElementById('f_obs').value=m?.obs||'';
+  document.getElementById('leadModal').style.display='flex';
+  setTimeout(()=>document.getElementById('f_nome').focus(),60);
+}
+function closeLeadModal(){ document.getElementById('leadModal').style.display='none'; editingLeadId=null; }
+
+function saveLead(){
+  const nome=document.getElementById('f_nome').value.trim();
+  const clinica=document.getElementById('f_clinica').value.trim();
+  if(!nome||!clinica){ alert('Nome e clínica são obrigatórios.'); return; }
+  const data={id:editingLeadId||uid(),nome,clinica,whats:document.getElementById('f_whats').value.trim(),email:document.getElementById('f_email').value.trim(),stageId:document.getElementById('f_stage').value,origem:document.getElementById('f_origem').value,esp:document.getElementById('f_esp').value.trim(),ticket:document.getElementById('f_ticket').value.trim(),ownerId:document.getElementById('f_owner').value,proximo:document.getElementById('f_proximo').value.trim(),obs:document.getElementById('f_obs').value.trim(),criadoEm:editingLeadId?(S.leads.find(l=>l.id===editingLeadId)||{}).criadoEm:new Date().toISOString(),atualizadoEm:new Date().toISOString()};
+  if(editingLeadId){ const i=S.leads.findIndex(l=>l.id===editingLeadId); S.leads[i]=data; logActivity(`Lead "${nome}" atualizado`); toast('Lead atualizado!'); }
+  else{ S.leads.unshift(data); logActivity(`Novo lead "${nome}" criado`); toast('Lead adicionado!'); }
+  save(); closeLeadModal(); renderAll();
+  sbUpsertLead(data);
+}
+
+function deleteLead(id){
+  const l=S.leads.find(x=>x.id===id); if(!l) return;
+  if(S.prefs.confirmDelete&&!confirm(`Remover "${l.nome}"?`)) return;
+  S.leads=S.leads.filter(x=>x.id!==id); logActivity(`Lead "${l.nome}" removido`);
+  save(); renderAll(); closeDetail(); toast('Lead removido.');
+  sbDeleteLead(id);
+}
+
+/* ══ DETAIL PANEL ══ */
+function openDetail(id){
+  const l=S.leads.find(x=>x.id===id); if(!l) return;
+  const stage=stageOf(l.stageId);
+  document.getElementById('detailPanel').innerHTML=`
+    <div class="detail-head">
+      <div class="avatar av-lg" style="${avStyle(stage.color)}">${initials(l.nome)}</div>
+      <div style="flex:1">
+        <div class="detail-name">${esc(l.nome)}</div>
+        <div class="detail-empresa">${esc(l.clinica)}</div>
+        <span class="badge" style="background:${stage.color}18;color:${stage.color};margin-top:6px;display:inline-block">${esc(stage.name)}</span>
+      </div>
+      <button class="close-x" onclick="closeDetail()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <hr class="detail-sep">
+    ${l.whats?`<div class="detail-field"><label>WhatsApp</label><p><a href="https://wa.me/55${l.whats.replace(/\D/g,'')}" target="_blank">${esc(l.whats)}</a></p></div>`:''}
+    ${l.email?`<div class="detail-field"><label>E-mail</label><p>${esc(l.email)}</p></div>`:''}
+    ${l.esp?`<div class="detail-field"><label>Especialidade</label><p>${esc(l.esp)}</p></div>`:''}
+    ${l.ticket?`<div class="detail-field"><label>Ticket estimado</label><p style="font-family:'DM Mono',monospace;color:var(--accent)">R$ ${Number(l.ticket).toLocaleString('pt-BR')}</p></div>`:''}
+    <div class="detail-field"><label>Origem</label><p>${esc(l.origem||'—')}</p></div>
+    <div class="detail-field"><label>Responsável</label><p>${esc(ownerOf(l.ownerId))}</p></div>
+    ${l.proximo?`<div class="detail-field"><label>Próximo passo</label><p style="color:var(--accent)">${esc(l.proximo)}</p></div>`:''}
+    ${l.obs?`<div class="detail-field"><label>Observações</label><p style="color:var(--text2)">${esc(l.obs)}</p></div>`:''}
+    <div class="detail-field"><label>Criado em</label><p>${fmtDateFull(l.criadoEm)}</p></div>
+    <div class="detail-footer">
+      <button class="btn btn-accent" onclick="closeDetail();openLeadModal('${l.id}')">Editar</button>
+      <button class="btn btn-danger" onclick="deleteLead('${l.id}')">Remover</button>
+    </div>`;
+  document.getElementById('detailOverlay').style.display='flex';
+}
+function closeDetail(){ document.getElementById('detailOverlay').style.display='none'; }
+
+/* ══ STAGES SETTINGS ══ */
+function openSettings(){ tempStages=S.stages.map(s=>({...s})); renderTempStages(); document.getElementById('stagesModal').style.display='flex'; }
+function closeSettings(){ document.getElementById('stagesModal').style.display='none'; }
+function renderTempStages(){
+  document.getElementById('stagesSettingsList').innerHTML=tempStages.map((s,i)=>`
+    <div class="stage-row">
+      <div class="color-dot-btn" style="background:${s.color}" onclick="toggleCP('sm-cp-${s.id}')"></div>
+      <input class="stage-input" value="${esc(s.name)}" oninput="tempStages[${i}].name=this.value">
+      <button class="btn btn-ghost btn-sm" onclick="rmTempStage('${s.id}')" style="color:var(--red);padding:5px 9px">×</button>
+    </div>
+    <div id="sm-cp-${s.id}" style="display:none;padding:2px 30px 8px">
+      <div class="cp-row">${COLORS.map(c=>`<div class="cp${s.color===c?' sel':''}" style="background:${c}" onclick="setTSColor('${s.id}','${c}',this)"></div>`).join('')}</div>
+    </div>`).join('');
+}
+function toggleCP(id){ const el=document.getElementById(id); if(el) el.style.display=el.style.display==='none'?'block':'none'; }
+function setTSColor(id,color,dot){ const s=tempStages.find(x=>x.id===id); if(!s) return; s.color=color; dot.closest('.stage-row').querySelector('.color-dot-btn').style.background=color; dot.parentElement.querySelectorAll('.cp').forEach(d=>d.classList.remove('sel')); dot.classList.add('sel'); }
+function rmTempStage(id){ if(tempStages.length<=1){alert('Precisa de ao menos 1 etapa.');return;} tempStages=tempStages.filter(s=>s.id!==id); renderTempStages(); }
+function addTempStage(){ tempStages.push({id:uid(),name:'Nova etapa',color:COLORS[tempStages.length%COLORS.length]}); renderTempStages(); }
+function saveSettings(){ for(const s of tempStages){ if(!s.name.trim()){alert('Preencha todos os nomes.');return;} } const ids=tempStages.map(s=>s.id); S.leads.forEach(l=>{ if(!ids.includes(l.stageId)) l.stageId=tempStages[0].id; }); S.stages=tempStages; logActivity('Etapas atualizadas'); save(); closeSettings(); renderAll(); toast('Etapas salvas!'); }
+function addStageQuick(){ const name=prompt('Nome da nova etapa:'); if(!name?.trim()) return; S.stages.push({id:uid(),name:name.trim(),color:COLORS[S.stages.length%COLORS.length]}); save(); renderAll(); toast('Etapa adicionada!'); }
+
+/* ══ USERS ══ */
+function renderUsers(){
+  const tbody=document.getElementById('usersBody');
+  const empty=document.getElementById('emptyUsers');
+  document.getElementById('usersCount').textContent=`${S.users.length} usuário${S.users.length!==1?'s':''}`;
+  if(!S.users.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  const editIco=`<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+  const delIco=`<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
+  const planCls={free:'plan-free',pro:'plan-pro',enterprise:'plan-enterprise'};
+  tbody.innerHTML=S.users.map(u=>{
+    const leads=S.leads.filter(l=>l.ownerId===u.id).length;
+    return `<tr>
+      <td><div class="name-cell"><div class="avatar av-sm" style="${avStyle('#E87B1E')}">${initials(u.nome)}</div><span>${esc(u.nome)}</span></div></td>
+      <td style="color:var(--text2);font-size:12px">${esc(u.email)}</td>
+      <td><span class="badge ${u.role==='admin'?'role-admin':'role-user'}">${u.role==='admin'?'Admin':'Usuário'}</span></td>
+      <td><span class="badge ${planCls[u.plan]||'plan-free'}">${(u.plan||'free').toUpperCase()}</span></td>
+      <td><label class="toggle"><input type="checkbox" ${u.active?'checked':''} onchange="toggleUserActive('${u.id}',this.checked)"><span class="toggle-slider"></span></label></td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text2)">${leads}</td>
+      <td style="color:var(--text3);font-size:12px">${fmtDate(u.criadoEm)}</td>
+      <td><div class="tbl-actions">
+        <button class="icon-btn edit" onclick="openUserModal('${u.id}')">${editIco}</button>
+        <button class="icon-btn del" onclick="deleteUser('${u.id}')">${delIco}</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+function toggleUserActive(id,val){ const u=S.users.find(x=>x.id===id); if(!u) return; u.active=val; save(); toast(val?'Usuário ativado':'Usuário desativado'); renderStats(); }
+function openUserModal(id){
+  editingUserId=id||null;
+  const u=id?S.users.find(x=>x.id===id):null;
+  document.getElementById('umTitle').textContent=id?'Editar usuário':'Novo usuário';
+  document.getElementById('u_nome').value=u?.nome||'';
+  document.getElementById('u_email').value=u?.email||'';
+  document.getElementById('u_role').value=u?.role||'user';
+  document.getElementById('u_plan').value=u?.plan||'free';
+  document.getElementById('u_obs').value=u?.obs||'';
+  document.getElementById('userModal').style.display='flex';
+  setTimeout(()=>document.getElementById('u_nome').focus(),60);
+}
+function closeUserModal(){ document.getElementById('userModal').style.display='none'; editingUserId=null; }
+function saveUser(){
+  const nome=document.getElementById('u_nome').value.trim(); const email=document.getElementById('u_email').value.trim();
+  if(!nome||!email){alert('Nome e e-mail são obrigatórios.');return;}
+  const data={id:editingUserId||uid(),nome,email,role:document.getElementById('u_role').value,plan:document.getElementById('u_plan').value,obs:document.getElementById('u_obs').value.trim(),active:true,criadoEm:editingUserId?(S.users.find(u=>u.id===editingUserId)||{}).criadoEm:new Date().toISOString()};
+  if(editingUserId){ const i=S.users.findIndex(u=>u.id===editingUserId); S.users[i]=data; toast('Usuário atualizado!'); }
+  else{ S.users.push(data); toast('Usuário criado!'); }
+  logActivity(`Usuário "${nome}" ${editingUserId?'atualizado':'adicionado'}`);
+  save(); closeUserModal(); renderAll();
+}
+function deleteUser(id){ const u=S.users.find(x=>x.id===id); if(!u) return; if(!confirm(`Remover "${u.nome}"?`)) return; S.users=S.users.filter(x=>x.id!==id); save(); renderAll(); toast('Usuário removido.'); }
+
+/* ══ ADMIN OVERVIEW ══ */
+function renderAdminOverview(){
+  const total=S.leads.length; const ativos=S.users.filter(u=>u.active).length;
+  const pipeline=S.leads.reduce((a,l)=>a+Number(l.ticket||0),0);
+  const fechados=S.leads.filter(l=>stageOf(l.stageId).name.toLowerCase().includes('fech'));
+  const receita=fechados.reduce((a,l)=>a+Number(l.ticket||0),0);
+  const tx=total?Math.round(fechados.length/total*100):0;
+  document.getElementById('adminKpis').innerHTML=`
+    <div class="metric-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="metric-val">${total}</div><div class="metric-lbl">Total de leads</div></div>
+    <div class="metric-card c-blue"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="metric-val">${ativos}</div><div class="metric-lbl">Usuários ativos</div></div>
+    <div class="metric-card c-blue"><div class="metric-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="metric-val" style="font-size:18px">R$${pipeline.toLocaleString('pt-BR')}</div><div class="metric-lbl">Pipeline total</div></div>
+    <div class="metric-card c-green"><div class="metric-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="metric-val" style="font-size:18px">R$${receita.toLocaleString('pt-BR')}</div><div class="metric-lbl">Receita fechada</div></div>
+    <div class="metric-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="metric-val">${tx}%</div><div class="metric-lbl">Taxa de conversão</div></div>
+  `;
+  const stagesHtml=S.stages.map(s=>{ const cnt=S.leads.filter(l=>l.stageId===s.id).length; const pct=total?Math.round(cnt/total*100):0; return `<tr><td style="padding:10px 14px"><div style="display:flex;align-items:center;gap:8px"><div style="width:9px;height:9px;border-radius:50%;background:${s.color};flex-shrink:0"></div><span style="font-size:13px">${esc(s.name)}</span></div></td><td style="padding:10px 14px"><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:6px;background:var(--surface3);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${s.color};border-radius:3px"></div></div><span style="font-size:12px;color:var(--text2);min-width:24px;text-align:right;font-family:'DM Mono',monospace">${cnt}</span></div></td></tr>`; }).join('');
+  document.getElementById('stagesOverview').innerHTML=`<table style="width:100%"><tbody>${stagesHtml}</tbody></table>`;
+  const acts=S.activity.slice(0,10);
+  document.getElementById('activityFeed').innerHTML=acts.length?acts.map(a=>`<div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">${esc(a.msg)}</div><div class="activity-time">${fmtDateFull(a.time)}</div></div></div>`).join(''):`<div class="empty-state" style="padding:2rem">Nenhuma atividade ainda.</div>`;
+}
+
+/* ══ METRICS — KPI CARDS (sempre atualiza, independente da view) ══ */
+function renderMetricsCards(){
+  const el=document.getElementById('metricsGrid');
+  if(!el) return; // view ainda não foi renderizada no DOM
+  const leads=S.leads; const total=leads.length;
+  const fechados=leads.filter(l=>stageOf(l.stageId).name.toLowerCase().includes('fech'));
+  const perdidos=leads.filter(l=>stageOf(l.stageId).name.toLowerCase().includes('perd'));
+  const pipeline=leads.filter(l=>{ const n=stageOf(l.stageId).name.toLowerCase(); return !n.includes('fech')&&!n.includes('perd'); }).reduce((a,l)=>a+Number(l.ticket||0),0);
+  const receita=fechados.reduce((a,l)=>a+Number(l.ticket||0),0);
+  const ticketMedio=fechados.length?Math.round(receita/fechados.length):0;
+  const tx=total?Math.round(fechados.length/total*100):0;
+  const now=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  el.innerHTML=`
+    <div class="metric-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="metric-val">${total}</div><div class="metric-lbl">Total de leads</div><div class="metric-delta delta-neu">atualizado às ${now}</div></div>
+    <div class="metric-card c-green"><div class="metric-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="metric-val">${fechados.length}</div><div class="metric-lbl">Leads fechados</div><div class="metric-delta ${tx>0?'delta-up':'delta-neu'}">${tx}% de conversão</div></div>
+    <div class="metric-card c-red"><div class="metric-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div class="metric-val">${perdidos.length}</div><div class="metric-lbl">Leads perdidos</div><div class="metric-delta ${perdidos.length>0?'delta-down':'delta-neu'}">${total?Math.round(perdidos.length/total*100):0}% do total</div></div>
+    <div class="metric-card c-blue"><div class="metric-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="metric-val" style="font-size:16px">R$${pipeline.toLocaleString('pt-BR')}</div><div class="metric-lbl">Pipeline ativo</div></div>
+    <div class="metric-card c-green"><div class="metric-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="metric-val" style="font-size:16px">R$${receita.toLocaleString('pt-BR')}</div><div class="metric-lbl">Receita fechada</div></div>
+    <div class="metric-card c-purple"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div class="metric-val" style="font-size:16px">R$${ticketMedio.toLocaleString('pt-BR')}</div><div class="metric-lbl">Ticket médio</div></div>
+  `;
+}
+
+/* ══ METRICS — CHARTS (só renderiza quando a view está ativa) ══ */
+function renderMetrics(){
+  renderMetricsCards(); // garante KPIs atualizados ao entrar na view
+  const leads=S.leads;
+
+  const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const gridColor=isDark?'rgba(240,236,228,0.08)':'rgba(24,22,15,0.07)';
+  const textColor=isDark?'#a89e90':'#6b6557';
+  const defaults={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:isDark?'#201e19':'#fff',titleColor:isDark?'#f0ece4':'#18160f',bodyColor:isDark?'#a89e90':'#6b6557',borderColor:isDark?'rgba(240,236,228,0.15)':'rgba(24,22,15,0.12)',borderWidth:1,padding:10,cornerRadius:8,boxPadding:4}},scales:{x:{grid:{color:gridColor,drawBorder:false},ticks:{color:textColor,font:{family:'DM Sans',size:11}}},y:{grid:{color:gridColor,drawBorder:false},ticks:{color:textColor,font:{family:'DM Sans',size:11}}}}};
+
+  function makeChart(id,type,data,opts={}){
+    const ctx=document.getElementById(id);
+    if(!ctx) return;
+    // Atualiza dados do gráfico existente em vez de destruir/recriar (evita flicker)
+    if(chartInstances[id]){
+      chartInstances[id].data=data;
+      chartInstances[id].options={...chartInstances[id].options,...opts};
+      chartInstances[id].update('none'); // 'none' = sem animação na atualização
+      return;
+    }
+    chartInstances[id]=new Chart(ctx,{type,data,options:{...defaults,...opts}});
+  }
+
+  // Chart 1: leads por etapa (bar)
+  const stageLabels=S.stages.map(s=>s.name);
+  const stageCounts=S.stages.map(s=>leads.filter(l=>l.stageId===s.id).length);
+  makeChart('chartStages','bar',{labels:stageLabels,datasets:[{data:stageCounts,backgroundColor:S.stages.map(s=>s.color+'CC'),borderColor:S.stages.map(s=>s.color),borderWidth:1.5,borderRadius:6}]},{plugins:{...defaults.plugins}});
+
+  // Chart 2: receita por etapa (horizontal bar)
+  const stageRevenue=S.stages.map(s=>leads.filter(l=>l.stageId===s.id).reduce((a,l)=>a+Number(l.ticket||0),0));
+  makeChart('chartRevenue','bar',{labels:stageLabels,datasets:[{data:stageRevenue,backgroundColor:S.stages.map(s=>s.color+'99'),borderColor:S.stages.map(s=>s.color),borderWidth:1.5,borderRadius:6}]},{indexAxis:'y',plugins:{...defaults.plugins},scales:{x:{...defaults.scales.x,ticks:{...defaults.scales.x.ticks,callback:v=>'R$'+v.toLocaleString('pt-BR')}},y:{...defaults.scales.y}}});
+
+  // Chart 3: leads por origem (doughnut)
+  const origens=['Instagram','WhatsApp','Indicação','Webinar','Outro'];
+  const origemCounts=origens.map(o=>leads.filter(l=>l.origem===o).length);
+  const oriColors=['#E87B1E','#1A8A5A','#1A5FA8','#6442C8','#D94040'];
+  makeChart('chartOrigin','doughnut',{labels:origens,datasets:[{data:origemCounts,backgroundColor:oriColors.map(c=>c+'CC'),borderColor:isDark?'#201e19':'#fff',borderWidth:2,hoverOffset:6}]},{plugins:{legend:{display:true,position:'bottom',labels:{color:textColor,font:{family:'DM Sans',size:11},padding:12,boxWidth:10,boxHeight:10}},tooltip:{...defaults.plugins.tooltip}},scales:{}});
+
+  // Chart 4: funil (bar horizontal por etapa)
+  makeChart('chartFunnel','bar',{labels:stageLabels,datasets:[{label:'Leads',data:stageCounts,backgroundColor:'#E87B1E22',borderColor:'#E87B1E',borderWidth:1.5,borderRadius:6}]},{indexAxis:'y',plugins:{legend:{display:false},tooltip:{...defaults.plugins.tooltip,callbacks:{label:c=>`${c.parsed.x} lead${c.parsed.x!==1?'s':''}`}}},scales:{x:{...defaults.scales.x},y:{...defaults.scales.y}}});
+}
+
+/* ══ CONFIG ══ */
+function renderCfgStages(){
+  cfgTempStages=S.stages.map(s=>({...s}));
+  document.getElementById('cfgStagesList').innerHTML=cfgTempStages.map((s,i)=>`
+    <div class="stage-row">
+      <div class="color-dot-btn" style="background:${s.color}" onclick="toggleCP('cfg-cp-${s.id}')"></div>
+      <input class="stage-input" value="${esc(s.name)}" oninput="cfgTempStages[${i}].name=this.value">
+      <button class="btn btn-ghost btn-sm" onclick="rmCfgStage('${s.id}')" style="color:var(--red);padding:5px 9px">×</button>
+    </div>
+    <div id="cfg-cp-${s.id}" style="display:none;padding:2px 30px 8px">
+      <div class="cp-row">${COLORS.map(c=>`<div class="cp${s.color===c?' sel':''}" style="background:${c}" onclick="setCfgColor('${s.id}','${c}',this)"></div>`).join('')}</div>
+    </div>`).join('');
+}
+function setCfgColor(id,color,dot){ const s=cfgTempStages.find(x=>x.id===id); if(!s) return; s.color=color; dot.closest('.stage-row').querySelector('.color-dot-btn').style.background=color; dot.parentElement.querySelectorAll('.cp').forEach(d=>d.classList.remove('sel')); dot.classList.add('sel'); }
+function rmCfgStage(id){ if(cfgTempStages.length<=1){alert('Precisa de ao menos 1 etapa.');return;} cfgTempStages=cfgTempStages.filter(s=>s.id!==id); renderCfgStages(); }
+function addCfgStage(){ cfgTempStages.push({id:uid(),name:'Nova etapa',color:COLORS[cfgTempStages.length%COLORS.length]}); renderCfgStages(); }
+function saveCfgStages(){ for(const s of cfgTempStages){ if(!s.name.trim()){alert('Preencha todos os nomes.');return;} } const ids=cfgTempStages.map(s=>s.id); S.leads.forEach(l=>{ if(!ids.includes(l.stageId)) l.stageId=cfgTempStages[0].id; }); S.stages=cfgTempStages; logActivity('Etapas configuradas'); save(); renderAll(); toast('Etapas salvas!'); }
+function saveProfile(){ S.profile.name=document.getElementById('cfg_name').value.trim(); S.profile.email=document.getElementById('cfg_email').value.trim(); S.profile.brand=document.getElementById('cfg_brand').value.trim(); if(S.users[0]) S.users[0].nome=S.profile.name||S.users[0].nome; save(); applyProfile(); toast('Perfil salvo!'); }
+function savePref(key,val){ S.prefs[key]=val; save(); if(key==='showColValue'&&curView==='kanban') renderKanban(); }
+
+/* ══ CSV ══ */
+function exportCSV(){
+  if(!S.leads.length){alert('Nenhum lead para exportar.');return;}
+  const cols=['Nome','Clínica','WhatsApp','E-mail','Etapa','Origem','Especialidade','Ticket','Responsável','Próximo passo','Observações','Criado em'];
+  const rows=S.leads.map(l=>[l.nome,l.clinica,l.whats,l.email,stageOf(l.stageId).name,l.origem,l.esp,l.ticket,ownerOf(l.ownerId),l.proximo,l.obs,fmtDateFull(l.criadoEm)].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(','));
+  const csv='\uFEFF'+[cols.join(','),...rows].join('\r\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download=`neo-crm-${new Date().toISOString().slice(0,10)}.csv`; a.click(); toast('CSV exportado!');
+}
+function triggerImport(){ document.getElementById('importFile').click(); }
+function importCSV(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader(); reader.onload=ev=>{ const lines=ev.target.result.split('\n').slice(1).filter(l=>l.trim()); let count=0; const novos=[]; lines.forEach(line=>{ const cols=line.split(',').map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"').trim()); const nome=cols[0]; const clinica=cols[1]; if(!nome||!clinica) return; const sm=S.stages.find(s=>s.name===cols[4]); const lead={id:uid(),nome,clinica,whats:cols[2]||'',email:cols[3]||'',stageId:sm?.id||S.stages[0]?.id,origem:cols[5]||'Outro',esp:cols[6]||'',ticket:cols[7]||'',proximo:cols[9]||'',obs:cols[10]||'',criadoEm:new Date().toISOString(),atualizadoEm:new Date().toISOString()}; S.leads.push(lead); novos.push(lead); count++; }); logActivity(`${count} leads importados via CSV`); save(); renderAll(); toast(`${count} leads importados!`); if(sbReady()) novos.forEach(l=>sbUpsertLead(l)); }; reader.readAsText(file,'UTF-8'); e.target.value='';
+}
+function nukeData(){ if(!confirm('Apagar TUDO? Irreversível.')) return; if(!confirm('Confirmar exclusão total?')) return; localStorage.removeItem(KEY); location.reload(); }
+
+/* ══════════════════════════════════════════════════════
+   SISTEMA DE BACKUP — 3 CAMADAS
+   ══════════════════════════════════════════════════════ */
+
+// ── Estado de backup ──────────────────────────────────
+const BACKUP_KEY   = 'neo_crm_backup_meta';
+let backupMeta = { lastBackup: null, freqMin: 60, autoSync: false };
+let backupTimer = null;
+
+function loadBackupMeta(){
+  try{ const r=localStorage.getItem(BACKUP_KEY); if(r) Object.assign(backupMeta, JSON.parse(r)); }catch(e){}
+}
+function saveBackupMeta(){
+  localStorage.setItem(BACKUP_KEY, JSON.stringify(backupMeta));
+}
+
+// ── Painel de status (escudo ou aviso) ────────────────
+function renderBackupShield(){
+  const el = document.getElementById('backupShieldEl');
+  if(!el) return;
+  const last = backupMeta.lastBackup;
+  const sbOk = sbIsConfigured();
+  const hasBackup = !!last;
+  const lastStr = last ? new Date(last).toLocaleString('pt-BR') : 'nunca';
+
+  // Atualiza label de último backup
+  const lbl = document.getElementById('lastBackupLabel');
+  if(lbl) lbl.textContent = `Último backup: ${lastStr}`;
+
+  // Aviso se nunca fez backup
+  const warn = document.getElementById('jsonWarnEl');
+  if(warn) warn.style.display = hasBackup ? 'none' : 'flex';
+
+  // Escudo principal
+  if(hasBackup || sbOk){
+    el.innerHTML=`<div class="backup-shield">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      <div class="backup-shield-text">
+        <div class="backup-shield-title">Dados protegidos ✓</div>
+        <div class="backup-shield-sub">Último backup JSON: ${lastStr}${sbOk?' · Supabase conectado':''}</div>
+      </div>
+    </div>`;
+  } else {
+    el.innerHTML=`<div class="backup-warn">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span class="backup-warn-text"><strong>Atenção:</strong> seus dados estão apenas no localStorage deste navegador. Faça um backup JSON agora ou configure o Supabase para proteger seus leads.</span>
+    </div>`;
+  }
+}
+
+/* ── CAMADA 1: CSV (já existia, mantida) ── */
+// exportCSV() e importCSV() já existem abaixo
+
+/* ── CAMADA 2: JSON automático ─────────────────────── */
+function exportJSON(){
+  const payload = JSON.stringify(S, null, 2);
+  const date    = new Date().toISOString().slice(0,16).replace('T','_').replace(':','-');
+  const fname   = `neo-crm-backup_${date}.json`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([payload], {type:'application/json'}));
+  a.download = fname;
+  a.click();
+  backupMeta.lastBackup = new Date().toISOString();
+  saveBackupMeta();
+  renderBackupShield();
+  toast(`✅ Backup salvo: ${fname}`);
+  logActivity(`Backup JSON exportado`);
+}
+
+function triggerImportJSON(){ document.getElementById('importJSONFile').click(); }
+
+function importJSON(e){
+  const file = e.target.files[0]; if(!file) return;
+  if(!confirm(`Restaurar backup "${file.name}"? Os dados atuais serão substituídos.`)) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try{
+      const d = JSON.parse(ev.target.result);
+      if(!d.leads || !d.stages) throw new Error('Arquivo inválido — não parece ser um backup do NEO CRM.');
+      S.leads    = d.leads    || [];
+      S.stages   = d.stages   || S.stages;
+      S.users    = d.users    || S.users;
+      S.activity = d.activity || [];
+      if(d.profile) Object.assign(S.profile, d.profile);
+      if(d.prefs)   Object.assign(S.prefs, d.prefs);
+      save(); renderAll();
+      toast(`✅ ${S.leads.length} leads restaurados!`);
+      logActivity(`Backup JSON restaurado: ${file.name}`);
+    } catch(err){
+      alert('Erro ao restaurar: ' + err.message);
+    }
+  };
+  reader.readAsText(file, 'UTF-8');
+  e.target.value = '';
+}
+
+function setBackupFreq(val){
+  backupMeta.freqMin = parseInt(val);
+  saveBackupMeta();
+  scheduleAutoBackup();
+  toast(val==='0' ? 'Backup automático desligado.' : `Backup automático a cada ${val === '60' ? '1 hora' : val+' min'}.`);
+}
+
+function scheduleAutoBackup(){
+  if(backupTimer){ clearInterval(backupTimer); backupTimer=null; }
+  if(!backupMeta.freqMin) return;
+  backupTimer = setInterval(()=>{
+    exportJSON();
+    toast('💾 Backup automático salvo!');
+  }, backupMeta.freqMin * 60 * 1000);
+}
+
+/* ── CAMADA 3: Supabase nuvem ──────────────────────── */
+let sbAutoSyncTimer = null;
+
+function sbIsConfigured(){
+  const url = document.getElementById('sb_url')?.value?.trim() || '';
+  const key = document.getElementById('sb_key')?.value?.trim() || '';
+  return url.startsWith('https://') && key.length > 20;
+}
+
+function sbCheckConfig(){
+  const ok = sbIsConfigured();
+  const dot   = document.getElementById('sbDot');
+  const label = document.getElementById('sbStatusLabel');
+  if(!dot) return;
+  if(ok){
+    dot.className = 'supabase-dot ok';
+    label.textContent = 'Credenciais preenchidas — clique em "Testar conexão"';
+  } else {
+    dot.className = 'supabase-dot';
+    label.textContent = 'Não configurado — dados ficam apenas neste navegador';
+  }
+  renderBackupShield();
+}
+
+async function sbTestConnection(){
+  if(!sbIsConfigured()){ alert('Preencha a URL e a Anon Key do Supabase.'); return; }
+  const url = document.getElementById('sb_url').value.trim();
+  const key = document.getElementById('sb_key').value.trim();
+  const log = document.getElementById('sbSyncLog');
+  log.textContent = '🔄 Testando conexão...';
+  try{
+    const res = await fetch(`${url}/rest/v1/crm_leads?select=id&limit=1`, {
+      headers:{ 'apikey': key, 'Authorization': `Bearer ${key}` }
+    });
+    if(res.ok || res.status===406){
+      document.getElementById('sbDot').className='supabase-dot ok';
+      document.getElementById('sbStatusLabel').textContent='Supabase conectado ✓';
+      log.textContent='✅ Conexão OK — tabela crm_leads encontrada.';
+      renderBackupShield();
+    } else {
+      throw new Error(`Status ${res.status}`);
+    }
+  } catch(err){
+    document.getElementById('sbDot').className='supabase-dot err';
+    log.textContent=`❌ Erro: ${err.message} — verifique a URL e a key.`;
+  }
+}
+
+async function sbSyncNow(){
+  if(!sbReady()){ alert('Configure o Supabase primeiro.'); return; }
+  const log = document.getElementById('sbSyncLog');
+  log.textContent = `🔄 Sincronizando ${S.leads.length} leads...`;
+  try{
+    // Envia todos os leads locais
+    const rows = S.leads.map(leadToRow);
+    const res = await fetch(`${sbUrl()}/rest/v1/crm_leads`, {
+      method: 'POST',
+      headers:{
+        'apikey': sbKey(), 'Authorization': `Bearer ${sbKey()}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify(rows)
+    });
+    if(res.ok || res.status===201){
+      const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      log.textContent=`✅ ${S.leads.length} leads sincronizados às ${now}`;
+      backupMeta.lastBackup = new Date().toISOString();
+      saveBackupMeta(); renderBackupShield();
+      logActivity(`${S.leads.length} leads sincronizados no Supabase`);
+    } else {
+      const txt = await res.text();
+      throw new Error(`${res.status} — ${txt.slice(0,120)}`);
+    }
+  } catch(err){
+    log.textContent=`❌ Erro ao sincronizar: ${err.message}`;
+  }
+}
+
+function sbToggleAutoSync(){
+  backupMeta.autoSync = !backupMeta.autoSync;
+  saveBackupMeta();
+  const btn = document.getElementById('sbAutoSyncBtn');
+  if(backupMeta.autoSync){
+    btn.textContent='Auto-sync: ON';
+    btn.classList.add('btn-accent');
+    sbAutoSyncTimer = setInterval(sbSyncNow, 5 * 60 * 1000); // a cada 5 min
+    toast('Auto-sync ligado — sincroniza a cada 5 min.');
+  } else {
+    btn.textContent='Auto-sync: OFF';
+    btn.classList.remove('btn-accent');
+    if(sbAutoSyncTimer){ clearInterval(sbAutoSyncTimer); sbAutoSyncTimer=null; }
+    toast('Auto-sync desligado.');
+  }
+}
+
+// ── Inicializa backup ao carregar ─────────────────────
+function initBackup(){
+  loadBackupMeta();
+  // Restaura frequência de backup
+  const freqSel = document.getElementById('backupFreqSel');
+  if(freqSel) freqSel.value = String(backupMeta.freqMin||60);
+  scheduleAutoBackup();
+  // Restaura auto-sync
+  if(backupMeta.autoSync){
+    const btn = document.getElementById('sbAutoSyncBtn');
+    if(btn){ btn.textContent='Auto-sync: ON'; btn.classList.add('btn-accent'); }
+    sbAutoSyncTimer = setInterval(sbSyncNow, 5*60*1000);
+  }
+  renderBackupShield();
+}
+
+/* ══ KEYBOARD ══ */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeLeadModal(); closeDetail(); closeSettings(); closeUserModal(); }
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){ e.preventDefault(); if(curView==='kanban'||curView==='list') document.getElementById('searchInput').focus(); }
+  if((e.ctrlKey||e.metaKey)&&e.key==='n'){ e.preventDefault(); if(curView==='kanban'||curView==='list') openLeadModal(); }
+});
+
+/* ══ WHATSAPP INTEGRATION — Supabase Edge Functions ══ */
+
+// ──────────────────────────────────────────────────────────────
+// 🔧 CONFIGURAÇÃO: preencha após seguir o guia de setup
+// ──────────────────────────────────────────────────────────────
+const WA_CONFIG = {
+  supabaseUrl:     SUPABASE_URL || '',   // preenchido automaticamente pela constante acima
+  crmSecret:       '',                   // o CRM_SECRET que você definiu nas env vars
+  contactsEndpoint: function(){ return this.supabaseUrl + '/functions/v1/whatsapp-contacts'; },
+};
+// ──────────────────────────────────────────────────────────────
+
+let waConnected    = false;
+let waContacts     = [];
+let waAllSelected  = false;
+let waConfigured   = false;
+
+/* ── Detecta se as credenciais foram preenchidas ── */
+function waIsConfigured(){
+  return WA_CONFIG.supabaseUrl.startsWith('https://') && WA_CONFIG.crmSecret.length > 0;
+}
+
+/* ── Abre o modal ── */
+function openWaModal(){
+  document.getElementById('waModal').style.display = 'flex';
+  if (!waIsConfigured()) {
+    waGoToStep('cfg');
+    return;
+  }
+  if (waConnected) {
+    waGoToStep(2);
+    waLoadContacts();
+  } else {
+    waGoToStep(1);
+    setTimeout(renderWaQr, 600);
+  }
+}
+
+function closeWaModal(){
+  document.getElementById('waModal').style.display = 'none';
+}
+
+function waGoToStep(n){
+  document.querySelectorAll('.wa-step').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('waStep' + n);
+  if (el) el.classList.add('active');
+  const titles = { cfg:'Configurar integração', 1:'Aguardando conexão', 2:'Importar Contatos', 3:'Importando...', 4:'Concluído' };
+  const titleEl = document.getElementById('waModalTitle');
+  if (titleEl) titleEl.childNodes[titleEl.childNodes.length-1].textContent = ' ' + (titles[n] || '');
+}
+
+/* ── Salva credenciais digitadas pelo usuário ── */
+function waSaveConfig(){
+  const url    = document.getElementById('waInputUrl').value.trim().replace(/\/$/, '');
+  const secret = document.getElementById('waInputSecret').value.trim();
+  if (!url || !secret){ alert('Preencha a URL do Supabase e o CRM Secret.'); return; }
+  WA_CONFIG.supabaseUrl = url;
+  WA_CONFIG.crmSecret   = secret;
+  toast('Configuração salva!');
+  waGoToStep(1);
+  setTimeout(renderWaQr, 400);
+}
+
+/* ── Renderiza QR Code SVG (estático — orientação visual) ── */
+function renderWaQr(){
+  const spinner = document.getElementById('waQrSpinner');
+  const svg     = document.getElementById('waQrSvg');
+  const hint    = document.getElementById('waQrHint');
+  const cell = 6; const cols = 32;
+  const seed = ['11111110101010111111','10000010010010100000','10111010110101101110','10111010011101101110','10111010100111101110','10000010001100100000','11111110101010111111','00000001010011000000','11010110110110110110','01101001001100010011','10101110101011101010','01010101010101010101','11001010101010101010','00000001010101000000','11111110101010101010','10000010101010100000','10111010101010101110','10111010010100101110','10111010101101101110','10000010010010100000','11111110101010111110'];
+  let rects = '';
+  for(let r=0;r<cols;r++) for(let c=0;c<cols;c++){
+    const row = seed[r % seed.length]||'';
+    if(row[c % row.length]==='1' || (Math.sin(r*7+c*13)*10)>3)
+      rects += `<rect x="${c*cell+4}" y="${r*cell+4}" width="${cell-1}" height="${cell-1}" fill="var(--text)" rx="0.5"/>`;
+  }
+  svg.innerHTML = rects;
+  if(spinner) spinner.style.display = 'none';
+  svg.style.display = 'block';
+  if(hint) hint.innerHTML = `
+    <b>Como conectar:</b><br>
+    1. Abra o WhatsApp no celular<br>
+    2. Toque nos 3 pontinhos → <b>Dispositivos vinculados</b><br>
+    3. Toque em <b>Vincular um dispositivo</b> e escaneie<br><br>
+    <span style="color:var(--green);font-size:11px">⚡ Após escanear, clique em "Já conectei" abaixo</span>
+  `;
+}
+
+/* ── Usuário confirma que conectou via QR ── */
+function waConfirmConnect(){
+  waConnected = true;
+  updateWaStatusBar();
+  waGoToStep(2);
+  waLoadContacts();
+}
+
+/* ── Busca contatos reais do Supabase ── */
+async function waLoadContacts(){
+  const list = document.getElementById('waContactList');
+  list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px"><div class="qr-spin" style="margin:0 auto 8px"></div>Buscando contatos...</div>';
+
+  try {
+    const res = await fetch(WA_CONFIG.contactsEndpoint(), {
+      headers: { 'x-crm-secret': WA_CONFIG.crmSecret }
+    });
+
+    if (res.status === 401) throw new Error('CRM Secret inválido. Verifique a configuração.');
+    if (!res.ok) throw new Error(`Erro ${res.status}: ${res.statusText}`);
+
+    const data = await res.json();
+    waContacts = (data.contacts || []).map(c => ({
+      id:       c.id,
+      name:     c.name || c.phone,
+      phone:    c.phone,
+      clinic:   'WhatsApp',
+      last_msg: c.last_msg || '',
+      selected: false,
+    }));
+
+    if (!waContacts.length) {
+      list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">Nenhum contato encontrado.<br>Aguarde mensagens chegarem via WhatsApp.</div>';
+      return;
+    }
+    renderWaContacts();
+
+  } catch(err){
+    list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--red);font-size:13px">❌ ${esc(err.message)}<br><br><button class="btn btn-sm" onclick="waLoadContacts()">Tentar novamente</button></div>`;
+  }
+}
+
+/* ── Renderiza lista de contatos ── */
+function renderWaContacts(){
+  const list = document.getElementById('waContactList');
+  if (!waContacts.length){ list.innerHTML='<p style="text-align:center;color:var(--text3);font-size:13px;padding:16px">Nenhum contato disponível.</p>'; return; }
+  list.innerHTML = waContacts.map(c => `
+    <div class="wa-contact-item${c.selected?' sel':''}" onclick="waToggleContact('${c.id}')">
+      <input type="checkbox" ${c.selected?'checked':''} onclick="event.stopPropagation();waToggleContact('${c.id}')">
+      <div class="wa-contact-av">${initials(c.name)}</div>
+      <div class="wa-contact-info">
+        <div class="wa-contact-name">${esc(c.name)}</div>
+        <div class="wa-contact-phone">${esc(c.phone)}${c.last_msg?` · <span style="color:var(--text3)">${esc(c.last_msg.slice(0,28))}…</span>`:''}</div>
+      </div>
+    </div>
+  `).join('');
+  updateWaSelCount();
+}
+
+function waToggleContact(id){
+  const c = waContacts.find(x => x.id === id);
+  if(c){ c.selected = !c.selected; renderWaContacts(); }
+}
+
+function waToggleAll(){
+  waAllSelected = !waAllSelected;
+  waContacts.forEach(c => c.selected = waAllSelected);
+  document.querySelector('.wa-sel-all').textContent = waAllSelected ? 'Desmarcar todos' : 'Selecionar todos';
+  renderWaContacts();
+}
+
+function updateWaSelCount(){
+  const n = waContacts.filter(c => c.selected).length;
+  const el = document.getElementById('waSelCount');
+  if(el) el.textContent = `${n} selecionado${n!==1?'s':''}`;
+}
+
+/* ── Importa selecionados → Kanban ── */
+async function waImportSelected(){
+  const selected = waContacts.filter(c => c.selected);
+  if(!selected.length){ alert('Selecione ao menos um contato.'); return; }
+  waGoToStep(3);
+  const bar   = document.getElementById('waProgressBar');
+  const label = document.getElementById('waProgressLabel');
+  let done = 0;
+
+  for(const c of selected){
+    const exists = S.leads.find(l => l.whats === c.phone);
+    if(!exists){
+      S.leads.unshift({
+        id:           uid(),
+        nome:         c.name,
+        clinica:      c.clinic || 'WhatsApp',
+        whats:        c.phone,
+        email:        '',
+        stageId:      S.stages[0]?.id || 's1',
+        origem:       'WhatsApp',
+        esp:          '',
+        ticket:       '',
+        ownerId:      '',
+        proximo:      '',
+        obs:          c.last_msg ? `Última msg: "${c.last_msg.slice(0,120)}"` : 'Importado via WhatsApp',
+        criadoEm:     new Date().toISOString(),
+        atualizadoEm: new Date().toISOString(),
+      });
+    }
+    done++;
+    const pct = Math.round(done / selected.length * 100);
+    bar.style.width  = pct + '%';
+    label.textContent = pct + '%';
+    await new Promise(r => setTimeout(r, 120));
+  }
+
+  // Notifica o Supabase que esses contatos foram importados (best-effort)
+  try {
+    await fetch(WA_CONFIG.contactsEndpoint(), {
+      method:  'POST',
+      headers: { 'x-crm-secret': WA_CONFIG.crmSecret, 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ wa_ids: selected.map(c => c.phone) }),
+    });
+  } catch(_){}
+
+  logActivity(`${selected.length} contatos importados via WhatsApp`);
+  save();
+  // Sincroniza todos os leads importados no Supabase
+  if(sbReady()){
+    const imported = selected.map(c => S.leads.find(l => l.whats === c.phone)).filter(Boolean);
+    imported.forEach(l => sbUpsertLead(l));
+  }
+  renderAll();
+
+  setTimeout(() => {
+    waGoToStep(4);
+    document.getElementById('waSuccessMsg').textContent =
+      `${selected.length} contato${selected.length!==1?'s':''} importado${selected.length!==1?'s':''}!`;
+  }, 300);
+}
+
+/* ── Desconecta (leads permanecem) ── */
+function waDisconnect(){
+  waConnected   = false;
+  waContacts    = [];
+  waAllSelected = false;
+  updateWaStatusBar();
+  closeWaModal();
+  toast('WhatsApp desconectado. Leads permanecem no CRM ✓');
+}
+
+function updateWaStatusBar(){
+  const bar   = document.getElementById('waStatusBar');
+  const dot   = document.getElementById('waDot');
+  const label = document.getElementById('waStatusLabel');
+  if(waConnected){
+    bar.classList.add('connected');
+    dot.classList.add('on');
+    label.textContent = 'WhatsApp conectado';
+  } else {
+    bar.classList.remove('connected');
+    dot.classList.remove('on');
+    label.textContent = waIsConfigured() ? 'Conectar WhatsApp' : '⚙️ Configurar WhatsApp';
+  }
+}
+
+function waGoToKanban(){
+  closeWaModal();
+  navTo('kanban');
+}
+
+/* ══ INIT ══ */
+load();
+// Auto-refresh das métricas a cada 60 segundos (atualiza horário e dados)
+setInterval(()=>{ renderStats(); renderMetricsCards(); if(curView==='metrics') renderMetrics(); }, 60000);
+</script>
+</body>
+</html>
